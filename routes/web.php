@@ -19,4 +19,5 @@ Route::get('/', [IndexController::class, 'index']);
 
 Route::group(['prefix' => 'bucket', 'as' => 'bucket.'], function () {
     Route::get('/', [BucketController::class, 'index'])->name('index');
+    Route::get('{id}', [BucketController::class, 'edit'])->name('edit');
 });

@@ -11,6 +11,7 @@ class BucketFile extends Model
     use HasFactory;
 
     protected $table = 'bucket_file';
+    protected $fillable = ['bucket_id', 'file_id', 'name', 'uri'];
 
     public function file(): HasOne
     {

@@ -10,4 +10,5 @@ class File extends Model
     use HasFactory;
 
     protected $table = 'file';
+    protected $fillable = ['sha256', 'size', 'mime_type'];
 }

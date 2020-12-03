@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class BucketController extends Controller
 {
-    public function index(Request $request): View
+    public function index(): View
     {
         $model = Bucket::query()
             ->where('user_id', Auth::id())
@@ -26,5 +26,20 @@ class BucketController extends Controller
             ->find($id);
 
         return view('bucket.edit', ['model' => $model]);
+    }
+
+    public function post(Request $request)
+    {
+
+    }
+
+    public function put(Request $request)
+    {
+
+    }
+
+    public function delete(int $id)
+    {
+
     }
 }

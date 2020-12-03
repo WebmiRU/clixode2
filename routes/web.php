@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\BucketController;
+use App\Http\Controllers\IndexController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +15,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', [IndexController::class, 'index']);
+
+Route::group(['prefix' => 'bucket', 'as' => 'bucket.'], function () {
+    Route::get('/', [BucketController::class, 'index'])->name('index');
 });

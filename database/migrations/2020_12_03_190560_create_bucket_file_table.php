@@ -18,6 +18,7 @@ class CreateBucketFileTable extends Migration
             $table->integer('bucket_id');
             $table->bigInteger('file_id');
             $table->text('name');
+            $table->text('uri')->nullable()->comment('URI');
             $table->timestamps();
 
             $table->foreign('bucket_id')->references('id')->on('bucket')

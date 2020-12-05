@@ -18,9 +18,8 @@ class CreateFileTable extends Migration
             $table->string('sha256', 64)->comment('Хэш 256');
             $table->bigInteger('size')->comment('Размер');
             $table->text('mime_type')->comment('Тип mime');
+            $table->decimal('progress')->comment('Прогресс загрузки');
             $table->timestamps();
-
-
         });
     }
 

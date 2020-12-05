@@ -46,15 +46,17 @@ class FileController extends Controller
     public function post(Request $request): RedirectResponse
     {
         $bucketId = $request->get('bucket_id');
+//        $link = $request->get();
 
         if ($request->hasFile('file')) {
             $filePath = $request->file('file')->getRealPath();
             $fileName = $request->file('file')->getClientOriginalName();
+
+
+                DB::beginTransaction();
             $sha256 = hash_file('sha256', $filePath);
             $mimeType = mime_content_type($filePath);
             $fileSize = filesize($filePath);
-
-            DB::beginTransaction();
 
             try {
                 $model = File::where('sha256', $sha256)->first();

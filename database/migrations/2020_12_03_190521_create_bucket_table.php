@@ -20,7 +20,7 @@ class CreateBucketTable extends Migration
             $table->integer('user_id')->comment('Id юзера');
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('user')
+            $table->foreign('user_id')->references('id')->on('users')
                 ->onUpdate('CASCADE')->onDelete('SET NULL');
         });
     }

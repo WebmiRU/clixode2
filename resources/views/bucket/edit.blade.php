@@ -3,11 +3,31 @@
 @section('content')
     <h1>{{$model->title}}</h1>
 
-    <form method="post" action="{{route('file.post')}}" enctype="multipart/form-data">
+    <ul>
+        @foreach($model->imageProcessors ?? [] as $imageProcessor)
+            <li>{{$imageProcessor->title}}</li>
+        @endforeach
+    </ul>
+
+    <form method="post" action="{{route('bucket.put', ['id' => $model->id])}}">
+        @method('PUT')
+        @csrf
+
+        <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" id="title" name="title" value="{{$model->title}}"/>
+        </div>
+
+        <div class="mb-3">
+            <button type="submit" class="btn btn-success">Save</button>
+        </div>
+    </form>
+
+    <form method="post" action="{{$model->type == 'IMAGE' ? route('image.post') : route('file.post')}}" enctype="multipart/form-data">
         @method('POST')
         @csrf
 
-        <input type="hidden" name="bucket_id" value="{{$model->id}}" />
+        <input type="hidden" name="bucket_id" value="{{$model->id}}"/>
 
         <div class="mb-3">
             <label for="name" class="form-label">File by upload</label>

@@ -1,7 +1,7 @@
 @extends('index')
 
 @section('content')
-    <h1>Bucket index</h1>
+    <h1>Image processor index</h1>
 
     <table class="table table-striped">
         <thead>
@@ -9,7 +9,6 @@
             <th class="narrow">#</th>
             <th>Title</th>
             <th>Type</th>
-            {{--            <th>Created at</th>--}}
             <th class="narrow">Edit</th>
         </tr>
         </thead>
@@ -19,9 +18,8 @@
                 <td>{{$v->id}}</td>
                 <td>{{$v->title}}</td>
                 <td>{{$v->type}}</td>
-                {{--                <td>{{$v->created_at}}</td>--}}
                 <td>
-                    <a class="btn btn-sm btn-warning" href="{{route('bucket.edit', ['id' => $v->id])}}">Edit</a>
+                    <a class="btn btn-sm btn-warning" href="{{route('image-processor.edit', ['id' => $v->id])}}">Edit</a>
                 </td>
             </tr>
         @endforeach

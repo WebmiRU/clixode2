@@ -16,6 +16,14 @@
             display: grid;
             grid-template-columns: 300px 1fr;
         }
+
+        table td {
+            vertical-align: middle !important;
+        }
+
+        .narrow {
+            width: 10px;
+        }
     </style>
 </head>
 <body>

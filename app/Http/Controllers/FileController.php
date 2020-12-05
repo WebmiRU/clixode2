@@ -23,7 +23,6 @@ class FileController extends Controller
         if ($model) {
             $path = $this->hashToPath($model->file->sha256);
 
-
             return response(null, 200)
                 ->header('X-Accel-Redirect', "/file-storage/{$path}/{$model->file->sha256}")
                 ->header('Content-Type', 'application/octet-stream')

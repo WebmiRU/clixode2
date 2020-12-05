@@ -7,12 +7,13 @@ use App\Models\File;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
 class FileController extends Controller
 {
-    public function get(string $uri)
+    public function get(string $uri): Response
     {
         $model = BucketFile::query()
             ->with('file')
@@ -21,7 +22,6 @@ class FileController extends Controller
 
         if ($model) {
             $path = $this->hashToPath($model->file->sha256);
-
 
 
             return response(null, 200)
@@ -33,6 +33,15 @@ class FileController extends Controller
         } else {
             abort(404);
         }
+    }
+
+    protected function hashToPath(string $hash): string
+    {
+        $segment1 = mb_substr($hash, 0, 3);
+        $segment2 = mb_substr($hash, 3, 3);
+        $segment3 = mb_substr($hash, 6, 3);
+
+        return "{$segment1}/{$segment2}/{$segment3}";
     }
 
     public function post(Request $request): RedirectResponse
@@ -92,14 +101,5 @@ class FileController extends Controller
         }
 
         throw new Exception('Unique URI generation error');
-    }
-
-    protected function hashToPath(string $hash): string
-    {
-        $segment1 = mb_substr($hash, 0, 3);
-        $segment2 = mb_substr($hash, 3, 3);
-        $segment3 = mb_substr($hash, 6, 3);
-
-        return "{$segment1}/{$segment2}/{$segment3}";
     }
 }

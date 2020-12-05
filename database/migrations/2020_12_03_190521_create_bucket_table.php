@@ -18,6 +18,7 @@ class CreateBucketTable extends Migration
             $table->text('title');
             $table->text('uri')->nullable()->comment('URI');
             $table->integer('user_id')->comment('Id юзера');
+            $table->enum('type', ['IMAGE', 'FILE'])->comment('Тип');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')

@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             'title' => 'bucket',
             'uri' => 'bucket',
             'user_id' => $user1->id,
+            'type' => 'FILE'
         ]);
     }
 }

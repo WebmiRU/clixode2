@@ -23,24 +23,24 @@
         </div>
     </form>
 
-    <form method="post" action="{{$model->type == 'IMAGE' ? route('image.post') : route('file.post')}}" enctype="multipart/form-data">
+    <form method="post" action="{{route('image.post')}}" enctype="multipart/form-data">
         @method('POST')
         @csrf
 
         <input type="hidden" name="bucket_id" value="{{$model->id}}"/>
 
         <div class="mb-3">
-            <label for="name" class="form-label">File by upload</label>
+            <label for="name" class="form-label">Image by upload</label>
             <input type="file" class="form-control" id="file" name="file"/>
         </div>
 
         <div class="mb-3">
-            <label for="link" class="form-label">File by link</label>
+            <label for="link" class="form-label">Image by link</label>
             <input type="text" class="form-control" id="link" name="link"/>
         </div>
 
         <div class="mb-3">
-            <button type="submit" class="btn btn-success">Add file</button>
+            <button type="submit" class="btn btn-success">Add image</button>
         </div>
     </form>
 

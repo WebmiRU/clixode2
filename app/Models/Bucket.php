@@ -20,6 +20,11 @@ class Bucket extends Model
         return $this->hasMany(BucketFile::class, 'bucket_id', 'id');
     }
 
+    public function images(): HasMany
+    {
+        return $this->hasMany(BucketImage::class, 'bucket_id', 'id');
+    }
+
     public function imageProcessors(): BelongsToMany
     {
         return $this->belongsToMany(ImageProcessor::class, 'bucket_m2m_image_processor', 'bucket_id', 'image_processor_id');

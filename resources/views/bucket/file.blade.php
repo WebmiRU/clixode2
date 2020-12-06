@@ -23,7 +23,7 @@
         </div>
     </form>
 
-    <form method="post" action="{{$model->type == 'IMAGE' ? route('image.post') : route('file.post')}}" enctype="multipart/form-data">
+    <form method="post" action="{{route('file.post')}}" enctype="multipart/form-data">
         @method('POST')
         @csrf
 

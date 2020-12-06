@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bucket;
 use App\Models\BucketFile;
-use App\Models\File;
+use App\Models\BucketImage;
+use App\Models\Image;
+use App\Models\ImageThumbnail;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManagerStatic;
 use Throwable;
 
 class ImageController extends Controller
@@ -47,45 +52,89 @@ class ImageController extends Controller
     {
         $bucketId = $request->get('bucket_id');
 
-
-
-        return redirect()->back();
-
-//        $link = $request->get();
-
         if ($request->hasFile('file')) {
-            $filePath = $request->file('file')->getRealPath();
-            $fileName = $request->file('file')->getClientOriginalName();
+            $imagePath = $request->file('file')->getRealPath();
+            $imageName = $request->file('file')->getClientOriginalName();
 
+            DB::beginTransaction();
 
-                DB::beginTransaction();
-            $sha256 = hash_file('sha256', $filePath);
-            $mimeType = mime_content_type($filePath);
-            $fileSize = filesize($filePath);
+            $sha256 = hash_file('sha256', $imagePath);
+            $mimeType = mime_content_type($imagePath);
+            $fileSize = filesize($imagePath);
 
             try {
-                $model = File::where('sha256', $sha256)->first();
+                $model = Image::where('sha256', $sha256)->first();
 
                 if (!$model) {
-                    $model = File::create([
+                    $model = Image::create([
                         'sha256' => $sha256,
                         'mime_type' => $mimeType,
                         'size' => $fileSize,
                     ]);
                 }
 
-                BucketFile::create([
+                BucketImage::create([
                     'bucket_id' => $bucketId,
-                    'file_id' => $model->id,
-                    'name' => $fileName,
+                    'image_id' => $model->id,
+                    'name' => $imageName,
                     'uri' => $this->generateBucketFileUri(),
                 ]);
 
+                $bucket = Bucket::query()
+                    ->with('imageProcessors.actions')
+                    ->find($bucketId);
+
+                foreach ($bucket->imageProcessors as $imageProcessor) {
+                    foreach ($imageProcessor->actions as $action) {
+                        $img = ImageManagerStatic::make($imagePath);
+
+                        switch ($action->name) {
+                            case 'resize':
+                                //Width param
+                                $actionParamIdWidth = $action->params->where('name', 'width')->first()->id;
+                                $actionParamWidthValue = $imageProcessor->actionParamValues->where('image_processor_action_param_id', $actionParamIdWidth)->first()->value;
+
+                                //Height param
+                                $actionParamIdHeight = $action->params->where('name', 'height')->first()->id;
+                                $actionParamHeightValue = $imageProcessor->actionParamValues->where('image_processor_action_param_id', $actionParamIdHeight)->first()->value;
+
+                                //Resize action
+                                $img->resize($actionParamWidthValue, $actionParamHeightValue, function ($constraint) {
+//                                    $constraint->aspectRatio();
+                                });
+                                break;
+                        }
+
+
+
+                        Storage::disk('images')->put('image101.jpg', $img->stream());
+                        $pathPrefix = Storage::disk('images')->getDriver()->getAdapter()->getPathPrefix();
+                        dd($pathPrefix);
+
+                        $imageThumbnailSha256 = hash('sha256', $img->encode());
+
+                        $imageThumbnail = ImageThumbnail::where('sha256', $imageThumbnailSha256)->first();
+
+                        if(!$imageThumbnail) {
+                            $imageThumbnail = ImageThumbnail::create([
+                                'image_id' => $model->id,
+                                'image_processor_id' => $imageProcessor->id,
+                                'sha256' => null,
+                                'mime_type' => null,
+                            ]);
+                        }
+
+
+
+                    }
+                }
+
                 DB::commit();
 
-                $request->file('file')->storeAs($this->hashToPath($sha256), $sha256, 'files');
+                $request->file('file')->storeAs($this->hashToPath($sha256), $sha256, 'images');
             } catch (Throwable $e) {
                 DB::rollBack();
+                dd($e->getMessage());
             }
         }
 

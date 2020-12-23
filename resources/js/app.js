@@ -1,26 +1,19 @@
-require('./bootstrap');
+import {createApp} from 'vue'
+import {createRouter, createWebHistory, createWebHashHistory} from "vue-router";
+// import router from './router' // <---
+import Index from './Pages/Index'
+import BucketImageEdit from './Pages/BucketImage/Edit'
 
-require('moment');
+const routes = [
+    {path: '/bucket-image/:id', name: 'bucket-image.edit', component: BucketImageEdit},
+];
 
-import Vue from 'vue';
+const router = createRouter({
+    history: createWebHashHistory(),
+    routes,
+});
 
-import { InertiaApp } from '@inertiajs/inertia-vue';
-import { InertiaForm } from 'laravel-jetstream';
-import PortalVue from 'portal-vue';
-
-Vue.mixin({ methods: { route } });
-Vue.use(InertiaApp);
-Vue.use(InertiaForm);
-Vue.use(PortalVue);
-
-const app = document.getElementById('app');
-
-new Vue({
-    render: (h) =>
-        h(InertiaApp, {
-            props: {
-                initialPage: JSON.parse(app.dataset.page),
-                resolveComponent: (name) => require(`./Pages/${name}`).default,
-            },
-        }),
-}).$mount(app);
+const app = createApp(Index);
+app.use(router);
+app.mount('#app');
+// app.component('app-version-edit', AppVersionEdit);

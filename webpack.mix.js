@@ -11,9 +11,14 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/app.js', 'public/js')
-    .postCss('resources/css/app.css', 'public/css', [
-        require('postcss-import'),
-        require('tailwindcss'),
-    ])
-    .webpackConfig(require('./webpack.config'));
+mix.js('resources/js/app.js', 'public/js').vue({
+    version: 3,
+});
+
+mix.postCss('resources/css/app.css', 'public/css', [
+    require('postcss-import'),
+    require('tailwindcss'),
+]).browserSync({
+    proxy: 'clixode2.local',
+})
+.webpackConfig(require('./webpack.config'));

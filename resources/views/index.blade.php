@@ -63,6 +63,8 @@
 <div class="container">
     <div class="body">
         <div class="content mt-4">
+            <div id="app"></div>
+
             @section('content')
                 <h1>Content body</h1>
             @show
@@ -70,5 +72,8 @@
     </div>
 </div>
 
+
+
+<script src="/js/app.js"></script>
 </body>
 </html>

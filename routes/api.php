@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\BucketController;
 use App\Http\Controllers\API\FileController;
 use App\Http\Controllers\API\ImageController;
 use Illuminate\Http\Request;
@@ -18,6 +19,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+//Bucket
+Route::group(['prefix' => 'bucket', 'as' => 'bucket.'], function () {
+    Route::get('/', [BucketController::class, 'index'])->name('index');
+    Route::get('{id}', [BucketController::class, 'get'])->name('get');
+    Route::post('/', [BucketController::class, 'post'])->name('post');
 });
 
 //Images

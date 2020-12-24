@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\IndexResource;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
 
 class IndexController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         if (Auth::id()) {
             return view('index');
@@ -17,7 +19,7 @@ class IndexController extends Controller
         }
     }
 
-    public function login(Request $request)
+    public function login(Request $request): JsonResource
     {
         $credentials = $request->only('email', 'password');
 

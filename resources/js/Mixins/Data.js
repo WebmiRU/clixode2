@@ -1,7 +1,7 @@
 import {reactive} from 'vue'
 
 export default {
-    data () {
+    data() {
         return {
             loading: true,
             model: {data: {}},
@@ -17,6 +17,15 @@ export default {
         }
     },
     methods: {
+        getCookie: function(name) {
+            let results = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+
+            if(results) {
+                return (unescape(results[2]));
+            }
+
+            return null;
+        },
         get: async function (url) {
             let apiToken = sessionStorage.getItem('api_token');
 
@@ -102,7 +111,7 @@ export default {
             let formData = new FormData();
             let upload = reactive({progress: 0});
 
-            if(!imagesObject) {
+            if (!imagesObject) {
                 imagesObject = this.model.data.images;
             }
 
@@ -140,19 +149,25 @@ export default {
             formData.append('image', image);
             xhr.send(formData);
         },
-        uploadFile(file, filesObject) {
+        upload(file, type, listObject, data) {
             let xhr = new XMLHttpRequest();
             let formData = new FormData();
             let upload = reactive({progress: 0});
 
-            if(!filesObject) {
-                filesObject = this.model.data.files;
+            if (type == 'file' && !listObject) {
+                listObject = this.model.data.files;
+            } else if (type == 'image' && !listObject) {
+                listObject = this.model.data.images;
             }
 
-            filesObject.push(upload);
-            // console.log(filesObject)
+            listObject.push(upload);
+
+            for (let key in data) {
+                formData.append(key, data[key]);
+            }
 
             xhr.open('POST', this.dataUploadFileUrl, true);
+            xhr.setRequestHeader('X-XSRF-TOKEN', this.getCookie('XSRF-TOKEN'));
 
             xhr.upload.addEventListener('progress', (e) => {
                 upload.progress = (e.loaded / e.total * 100).toFixed(2) || 100;

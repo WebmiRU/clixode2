@@ -14475,11 +14475,11 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    _uploadFile: function _uploadFile() {
+    uploadFile: function uploadFile() {
       var file = this.$refs.upload_file.files[0];
-      var filesModel = null; // let filesModel = this.model.data.platforms.byId(platformId, 'platform', 'id').images;
-
-      this.uploadFile(file, this.model.data.files);
+      this.upload(file, 'file', this.model.data.files, {
+        bucket_id: this.$route.params.id
+      });
     }
   }
 });
@@ -14647,7 +14647,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("label", _hoisted_4, [_hoisted_5, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("input", {
     ref: "upload_file",
     onChange: _cache[2] || (_cache[2] = function ($event) {
-      return $options._uploadFile();
+      return $options.uploadFile();
     }),
     multiple: "",
     name: "file",
@@ -14907,6 +14907,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     };
   },
   methods: {
+    getCookie: function getCookie(name) {
+      var results = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+
+      if (results) {
+        return unescape(results[2]);
+      }
+
+      return null;
+    },
     get: function () {
       var _get = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee(url) {
         var apiToken;
@@ -15164,20 +15173,27 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       formData.append('image', image);
       xhr.send(formData);
     },
-    uploadFile: function uploadFile(file, filesObject) {
+    upload: function upload(file, type, listObject, data) {
       var xhr = new XMLHttpRequest();
       var formData = new FormData();
       var upload = (0,vue__WEBPACK_IMPORTED_MODULE_1__.reactive)({
         progress: 0
       });
 
-      if (!filesObject) {
-        filesObject = this.model.data.files;
+      if (type == 'file' && !listObject) {
+        listObject = this.model.data.files;
+      } else if (type == 'image' && !listObject) {
+        listObject = this.model.data.images;
       }
 
-      filesObject.push(upload); // console.log(filesObject)
+      listObject.push(upload);
+
+      for (var key in data) {
+        formData.append(key, data[key]);
+      }
 
       xhr.open('POST', this.dataUploadFileUrl, true);
+      xhr.setRequestHeader('X-XSRF-TOKEN', this.getCookie('XSRF-TOKEN'));
       xhr.upload.addEventListener('progress', function (e) {
         upload.progress = (e.loaded / e.total * 100).toFixed(2) || 100;
       });

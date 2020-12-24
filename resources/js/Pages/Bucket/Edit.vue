@@ -11,7 +11,7 @@
     <div class="mb-3">
         <label class="btn btn-success">
             Upload file
-            <input ref="upload_file" @change="_uploadFile()" multiple name="file" type="file" style="display: none"/>
+            <input ref="upload_file" @change="uploadFile()" multiple name="file" type="file" style="display: none"/>
         </label>
 
         <button class="btn btn-success" type="submit">Upload by link</button>
@@ -76,12 +76,10 @@ export default {
         };
     },
     methods: {
-        _uploadFile() {
+        uploadFile() {
             let file = this.$refs.upload_file.files[0];
-            let filesModel = null;
-            // let filesModel = this.model.data.platforms.byId(platformId, 'platform', 'id').images;
 
-            this.uploadFile(file, this.model.data.files);
+            this.upload(file, 'file', this.model.data.files, {bucket_id: this.$route.params.id});
         }
     }
 }

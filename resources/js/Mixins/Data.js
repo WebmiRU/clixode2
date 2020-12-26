@@ -35,11 +35,10 @@ export default {
                 // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
                 // credentials: 'same-origin', // include, *same-origin, omit
                 headers: {
-                    // 'Authorization': `Bearer ${apiToken}`,
+                    'Authorization': `Bearer ${apiToken}`,
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
                     'X-XSRF-TOKEN': this.getCookie('XSRF-TOKEN'),
-                    'Access-Control-Allow-Origin': '*',
                 },
                 // redirect: 'follow', // manual, *follow, error
                 // referrer: 'no-referrer', // no-referrer, *client
@@ -110,6 +109,7 @@ export default {
             xhr.send(formData);
         },
         upload(file, type, listObject, data) {
+            let apiToken = sessionStorage.getItem('api_token');
             let xhr = new XMLHttpRequest();
             let formData = new FormData();
             let upload = reactive({progress: 0});
@@ -127,6 +127,7 @@ export default {
             }
 
             xhr.open('POST', this.dataUploadFileUrl, true);
+            xhr.setRequestHeader('Authorization', `Bearer ${apiToken}`);
             xhr.setRequestHeader('X-XSRF-TOKEN', this.getCookie('XSRF-TOKEN'));
 
             xhr.upload.addEventListener('progress', (e) => {

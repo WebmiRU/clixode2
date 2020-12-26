@@ -14935,11 +14935,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
                   // credentials: 'same-origin', // include, *same-origin, omit
                   headers: {
-                    // 'Authorization': `Bearer ${apiToken}`,
+                    'Authorization': "Bearer ".concat(apiToken),
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
-                    'X-XSRF-TOKEN': this.getCookie('XSRF-TOKEN'),
-                    'Access-Control-Allow-Origin': '*'
+                    'X-XSRF-TOKEN': this.getCookie('XSRF-TOKEN')
                   } // redirect: 'follow', // manual, *follow, error
                   // referrer: 'no-referrer', // no-referrer, *client
                   // body: JSON.stringify(model),
@@ -15057,6 +15056,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       xhr.send(formData);
     },
     upload: function upload(file, type, listObject, data) {
+      var apiToken = sessionStorage.getItem('api_token');
       var xhr = new XMLHttpRequest();
       var formData = new FormData();
       var upload = (0,vue__WEBPACK_IMPORTED_MODULE_1__.reactive)({
@@ -15076,6 +15076,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
 
       xhr.open('POST', this.dataUploadFileUrl, true);
+      xhr.setRequestHeader('Authorization', "Bearer ".concat(apiToken));
       xhr.setRequestHeader('X-XSRF-TOKEN', this.getCookie('XSRF-TOKEN'));
       xhr.upload.addEventListener('progress', function (e) {
         upload.progress = (e.loaded / e.total * 100).toFixed(2) || 100;

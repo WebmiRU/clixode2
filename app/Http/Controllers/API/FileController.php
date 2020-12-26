@@ -80,6 +80,7 @@ class FileController extends Controller
                 DB::rollBack();
 
                 //@TODO Return error
+                dd($e->getMessage());
             }
         }
     }

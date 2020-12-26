@@ -7,6 +7,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class IndexController extends Controller
 {
@@ -19,13 +20,14 @@ class IndexController extends Controller
         }
     }
 
-    public function login(Request $request): JsonResource|array
+    public function login(Request $request): JsonResource
     {
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
+            $request->user()->tokens()->delete();
             $token = $request->user()->createToken('main');
 
             return new IndexResource([

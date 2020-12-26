@@ -19,15 +19,18 @@ class IndexController extends Controller
         }
     }
 
-    public function login(Request $request): JsonResource
+    public function login(Request $request): JsonResource|array
     {
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
+            $token = $request->user()->createToken('main');
+
             return new IndexResource([
                 'success' => true,
+                'token' => $token->plainTextToken,
             ]);
         }
 
@@ -37,6 +40,5 @@ class IndexController extends Controller
                 400 => 'Login or password is incorrect',
             ]
         ]);
-
     }
 }

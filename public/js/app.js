@@ -14916,216 +14916,99 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
       return null;
     },
-    get: function () {
-      var _get = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee(url) {
-        var apiToken;
+    request: function () {
+      var _request = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee(type, url) {
+        var model,
+            apiToken,
+            init,
+            _args = arguments;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
+                model = _args.length > 2 && _args[2] !== undefined ? _args[2] : null;
                 apiToken = sessionStorage.getItem('api_token');
-                _context.next = 3;
-                return fetch(url, {
-                  method: 'GET',
+                init = {
+                  method: type,
                   // *GET, POST, PUT, DELETE, etc.
-                  mode: 'cors',
-                  // no-cors, cors, *same-origin
-                  cache: 'no-cache',
-                  // *default, no-cache, reload, force-cache, only-if-cached
+                  // mode: 'cors', // no-cors, cors, *same-origin
+                  // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
                   // credentials: 'same-origin', // include, *same-origin, omit
                   headers: {
-                    'Authorization': "Bearer ".concat(apiToken),
+                    // 'Authorization': `Bearer ${apiToken}`,
                     'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                  },
-                  redirect: 'follow',
-                  // manual, *follow, error
-                  referrer: 'no-referrer' // no-referrer, *client
+                    'Accept': 'application/json',
+                    'X-XSRF-TOKEN': this.getCookie('XSRF-TOKEN'),
+                    'Access-Control-Allow-Origin': '*'
+                  } // redirect: 'follow', // manual, *follow, error
+                  // referrer: 'no-referrer', // no-referrer, *client
+                  // body: JSON.stringify(model),
 
-                }).then(function (response) {
+                };
+
+                if (model) {
+                  init.body = JSON.stringify(model);
+                }
+
+                _context.next = 6;
+                return fetch(url, init).then(function (response) {
                   return response.json();
                 });
 
-              case 3:
+              case 6:
                 return _context.abrupt("return", _context.sent);
 
-              case 4:
+              case 7:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee);
+        }, _callee, this);
       }));
 
-      function get(_x) {
-        return _get.apply(this, arguments);
+      function request(_x, _x2) {
+        return _request.apply(this, arguments);
       }
 
-      return get;
+      return request;
     }(),
-    post: function () {
-      var _post = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2(url, model) {
-        var _this = this;
+    submit: function () {
+      var _submit = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
+        var response, dataPostBackUrl, _response;
 
-        var apiToken;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                apiToken = sessionStorage.getItem('api_token');
-                _context2.next = 3;
-                return fetch(url, {
-                  method: 'POST',
-                  body: JSON.stringify(model),
-                  headers: {
-                    'Authorization': "Bearer ".concat(apiToken),
-                    'Content-type': 'application/json'
-                  }
-                }).then(function (response) {
-                  _this.loading = false;
-
-                  _this.dataHookPostCompleted();
-
-                  return response.json();
-                });
-
-              case 3:
-                return _context2.abrupt("return", _context2.sent);
-
-              case 4:
-              case "end":
-                return _context2.stop();
-            }
-          }
-        }, _callee2);
-      }));
-
-      function post(_x2, _x3) {
-        return _post.apply(this, arguments);
-      }
-
-      return post;
-    }(),
-    put: function () {
-      var _put = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3(url, model) {
-        var _this2 = this;
-
-        var apiToken;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
-          while (1) {
-            switch (_context3.prev = _context3.next) {
-              case 0:
-                apiToken = sessionStorage.getItem('api_token');
-                _context3.next = 3;
-                return fetch(url, {
-                  method: 'PUT',
-                  body: JSON.stringify(model),
-                  headers: {
-                    'Authorization': "Bearer ".concat(apiToken),
-                    'Content-type': 'application/json'
-                  }
-                }).then(function (response) {
-                  _this2.loading = false;
-
-                  _this2.dataHookPutCompleted();
-
-                  return response.json();
-                });
-
-              case 3:
-                return _context3.abrupt("return", _context3.sent);
-
-              case 4:
-              case "end":
-                return _context3.stop();
-            }
-          }
-        }, _callee3);
-      }));
-
-      function put(_x4, _x5) {
-        return _put.apply(this, arguments);
-      }
-
-      return put;
-    }(),
-    "delete": function () {
-      var _delete2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4(url) {
-        var _this3 = this;
-
-        var apiToken;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee4$(_context4) {
-          while (1) {
-            switch (_context4.prev = _context4.next) {
-              case 0:
-                apiToken = sessionStorage.getItem('api_token');
-                _context4.next = 3;
-                return fetch(url, {
-                  method: 'DELETE',
-                  body: JSON.stringify(model),
-                  headers: {
-                    'Authorization': "Bearer ".concat(apiToken),
-                    'Content-type': 'application/json'
-                  }
-                }).then(function (response) {
-                  _this3.loading = false;
-                  return response.json();
-                });
-
-              case 3:
-                return _context4.abrupt("return", _context4.sent);
-
-              case 4:
-              case "end":
-                return _context4.stop();
-            }
-          }
-        }, _callee4);
-      }));
-
-      function _delete(_x6) {
-        return _delete2.apply(this, arguments);
-      }
-
-      return _delete;
-    }(),
-    submit: function () {
-      var _submit = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee5() {
-        var response, dataPostBackUrl, _response;
-
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee5$(_context5) {
-          while (1) {
-            switch (_context5.prev = _context5.next) {
-              case 0:
                 if (!this.dataCreate) {
-                  _context5.next = 8;
+                  _context2.next = 8;
                   break;
                 }
 
-                _context5.next = 3;
+                _context2.next = 3;
                 return this.post(this.dataPostUrl, this.model.data);
 
               case 3:
-                response = _context5.sent;
+                response = _context2.sent;
                 dataPostBackUrl = this.dataUrl.replace(/^\/api/, '') + '/' + response.data.id;
                 this.$router.push(dataPostBackUrl);
-                _context5.next = 12;
+                _context2.next = 12;
                 break;
 
               case 8:
-                _context5.next = 10;
+                _context2.next = 10;
                 return this.put(this.dataPutUrl, this.model.data);
 
               case 10:
-                _response = _context5.sent;
+                _response = _context2.sent;
                 Object.assign(this.model.data, _response.data);
 
               case 12:
               case "end":
-                return _context5.stop();
+                return _context2.stop();
             }
           }
-        }, _callee5, this);
+        }, _callee2, this);
       }));
 
       function submit() {
@@ -15224,52 +15107,52 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     dataHookDeleteCompleted: function dataHookDeleteCompleted() {}
   },
   mounted: function mounted() {
-    var _this4 = this;
+    var _this = this;
 
-    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee6() {
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3() {
       var response;
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee6$(_context6) {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
         while (1) {
-          switch (_context6.prev = _context6.next) {
+          switch (_context3.prev = _context3.next) {
             case 0:
               //Data URL's
-              if (_this4.dataUrl) {
-                _this4.dataGetUrl = _this4.dataUrl + '/' + _this4.$route.params.id;
-                _this4.dataPutUrl = _this4.dataUrl + '/' + _this4.$route.params.id;
-                _this4.dataDeleteUrl = _this4.dataUrl;
-                _this4.dataPostUrl = _this4.dataUrl;
+              if (_this.dataUrl) {
+                _this.dataGetUrl = _this.dataUrl + '/' + _this.$route.params.id;
+                _this.dataPutUrl = _this.dataUrl + '/' + _this.$route.params.id;
+                _this.dataDeleteUrl = _this.dataUrl;
+                _this.dataPostUrl = _this.dataUrl;
               }
 
-              if (!_this4.dataCreate) {
-                _context6.next = 5;
+              if (!_this.dataCreate) {
+                _context3.next = 5;
                 break;
               }
 
-              _this4.loading = 0;
-              _context6.next = 12;
+              _this.loading = 0;
+              _context3.next = 12;
               break;
 
             case 5:
-              if (!_this4.dataGetUrl) {
-                _context6.next = 12;
+              if (!_this.dataGetUrl) {
+                _context3.next = 12;
                 break;
               }
 
-              _context6.next = 8;
-              return _this4.get(_this4.dataGetUrl);
+              _context3.next = 8;
+              return _this.request('GET', _this.dataGetUrl);
 
             case 8:
-              response = _context6.sent;
-              _this4.model.data = response.data;
-              _this4.loading = false;
-              _this4.dataPutUrl = _this4.dataGetUrl;
+              response = _context3.sent;
+              _this.model.data = response.data;
+              _this.loading = false;
+              _this.dataPutUrl = _this.dataGetUrl;
 
             case 12:
             case "end":
-              return _context6.stop();
+              return _context3.stop();
           }
         }
-      }, _callee6);
+      }, _callee3);
     }))();
   }
 });

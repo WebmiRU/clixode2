@@ -17,80 +17,40 @@ export default {
         }
     },
     methods: {
-        getCookie: function(name) {
+        getCookie: function (name) {
             let results = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
 
-            if(results) {
+            if (results) {
                 return (unescape(results[2]));
             }
 
             return null;
         },
-        get: async function (url) {
+        request: async function (type, url, model = null) {
             let apiToken = sessionStorage.getItem('api_token');
 
-            return await fetch(url, {
-                method: 'GET', // *GET, POST, PUT, DELETE, etc.
-                mode: 'cors', // no-cors, cors, *same-origin
-                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            const init = {
+                method: type, // *GET, POST, PUT, DELETE, etc.
+                // mode: 'cors', // no-cors, cors, *same-origin
+                // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
                 // credentials: 'same-origin', // include, *same-origin, omit
                 headers: {
-                    'Authorization': `Bearer ${apiToken}`,
+                    // 'Authorization': `Bearer ${apiToken}`,
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
+                    'X-XSRF-TOKEN': this.getCookie('XSRF-TOKEN'),
+                    'Access-Control-Allow-Origin': '*',
                 },
-                redirect: 'follow', // manual, *follow, error
-                referrer: 'no-referrer', // no-referrer, *client
-            }).then(response => {
-                return response.json();
-            });
-        },
-        post: async function (url, model) {
-            let apiToken = sessionStorage.getItem('api_token');
+                // redirect: 'follow', // manual, *follow, error
+                // referrer: 'no-referrer', // no-referrer, *client
+                // body: JSON.stringify(model),
+            }
 
-            return await fetch(url, {
-                method: 'POST',
-                body: JSON.stringify(model),
-                headers: {
-                    'Authorization': `Bearer ${apiToken}`,
-                    'Content-type': 'application/json',
-                }
-            }).then(response => {
-                this.loading = false;
-                this.dataHookPostCompleted();
+            if(model) {
+                init.body = JSON.stringify(model);
+            }
 
-                return response.json();
-            });
-        },
-        put: async function (url, model) {
-            let apiToken = sessionStorage.getItem('api_token');
-
-            return await fetch(url, {
-                method: 'PUT',
-                body: JSON.stringify(model),
-                headers: {
-                    'Authorization': `Bearer ${apiToken}`,
-                    'Content-type': 'application/json',
-                }
-            }).then(response => {
-                this.loading = false;
-                this.dataHookPutCompleted();
-
-                return response.json();
-            });
-        },
-        delete: async function (url) {
-            let apiToken = sessionStorage.getItem('api_token');
-
-            return await fetch(url, {
-                method: 'DELETE',
-                body: JSON.stringify(model),
-                headers: {
-                    'Authorization': `Bearer ${apiToken}`,
-                    'Content-type': 'application/json',
-                }
-            }).then(response => {
-                this.loading = false;
+            return await fetch(url, init).then(response => {
                 return response.json();
             });
         },
@@ -218,7 +178,7 @@ export default {
             this.loading = 0;
         } else {
             if (this.dataGetUrl) {
-                let response = await this.get(this.dataGetUrl);
+                let response = await this.request('GET', this.dataGetUrl);
 
                 this.model.data = response.data;
                 this.loading = false;

@@ -84,6 +84,7 @@
         let result = await response.json();
 
         if(result.data.success) {
+            sessionStorage.setItem('api_token', result.data.token);
             location.href = '/';
         } else {
             alert('Авторизация не удалась');

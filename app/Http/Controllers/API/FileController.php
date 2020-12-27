@@ -98,6 +98,8 @@ class FileController extends Controller
         ]);
 
         DownloadFileLink::dispatch($url);
+
+        return 1;
     }
 
     protected function generateBucketFileUri(): string

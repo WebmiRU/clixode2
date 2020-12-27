@@ -14467,11 +14467,20 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     uploadFile: function uploadFile() {
       var file = this.$refs.upload_file.files[0];
+      console.log(file);
+      console.log(this.model.data.files);
+      console.log({
+        bucket_id: this.$route.params.id
+      });
       this.upload(file, 'file', this.model.data.files, {
         bucket_id: this.$route.params.id
       });
     },
-    uploadFileByLink: function uploadFileByLink() {}
+    uploadFileByLink: function uploadFileByLink() {
+      this.uploadByLink('http://212.183.159.230/iconDownload-10MB.png', {
+        bucket_id: this.$route.params.id
+      });
+    }
   }
 });
 
@@ -15102,7 +15111,26 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       formData.append('file', file);
       xhr.send(formData);
     },
-    uploadByLink: function uploadByLink() {},
+    uploadByLink: function uploadByLink(url, data) {
+      var _this = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                //запрос POST
+                _this.request('POST'); //запрос статуса
+
+
+              case 1:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }))();
+    },
     hookUploadImage: function hookUploadImage(image) {},
     dataHookGetCompleted: function dataHookGetCompleted() {},
     dataHookPostCompleted: function dataHookPostCompleted() {},
@@ -15110,52 +15138,53 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     dataHookDeleteCompleted: function dataHookDeleteCompleted() {}
   },
   mounted: function mounted() {
-    var _this = this;
+    var _this2 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3() {
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4() {
       var response;
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee4$(_context4) {
         while (1) {
-          switch (_context3.prev = _context3.next) {
+          switch (_context4.prev = _context4.next) {
             case 0:
               //Data URL's
-              if (_this.dataUrl) {
-                _this.dataGetUrl = _this.dataUrl + '/' + _this.$route.params.id;
-                _this.dataPutUrl = _this.dataUrl + '/' + _this.$route.params.id;
-                _this.dataDeleteUrl = _this.dataUrl;
-                _this.dataPostUrl = _this.dataUrl;
+              if (_this2.dataUrl) {
+                _this2.dataGetUrl = _this2.dataUrl + '/' + _this2.$route.params.id;
+                _this2.dataPutUrl = _this2.dataUrl + '/' + _this2.$route.params.id;
+                _this2.dataDeleteUrl = _this2.dataUrl;
+                _this2.dataPostUrl = _this2.dataUrl;
               }
 
-              if (!_this.dataCreate) {
-                _context3.next = 5;
+              if (!_this2.dataCreate) {
+                _context4.next = 5;
                 break;
               }
 
-              _this.loading = 0;
-              _context3.next = 12;
+              _this2.loading = 0;
+              _context4.next = 13;
               break;
 
             case 5:
-              if (!_this.dataGetUrl) {
-                _context3.next = 12;
+              if (!_this2.dataGetUrl) {
+                _context4.next = 13;
                 break;
               }
 
-              _context3.next = 8;
-              return _this.request('GET', _this.dataGetUrl);
+              _context4.next = 8;
+              return _this2.request('GET', _this2.dataGetUrl);
 
             case 8:
-              response = _context3.sent;
-              _this.model.data = response.data;
-              _this.loading = false;
-              _this.dataPutUrl = _this.dataGetUrl;
+              response = _context4.sent;
+              console.log(11, _this2.dataGetUrl);
+              _this2.model.data = response.data;
+              _this2.loading = false;
+              _this2.dataPutUrl = _this2.dataGetUrl;
 
-            case 12:
+            case 13:
             case "end":
-              return _context3.stop();
+              return _context4.stop();
           }
         }
-      }, _callee3);
+      }, _callee4);
     }))();
   }
 });

@@ -156,7 +156,12 @@ export default {
             xhr.send(formData);
         },
 
-        uploadByLink(){},
+        async uploadByLink(url, data){
+            //запрос POST
+            this.request('POST',);
+
+            //запрос статуса
+        },
 
         hookUploadImage(image) {
         },
@@ -183,6 +188,9 @@ export default {
         } else {
             if (this.dataGetUrl) {
                 let response = await this.request('GET', this.dataGetUrl);
+
+                console.log(11, this.dataGetUrl)
+
 
                 this.model.data = response.data;
                 this.loading = false;

@@ -79,10 +79,14 @@ export default {
         uploadFile() {
             let file = this.$refs.upload_file.files[0];
 
+            console.log(file);
+            console.log(this.model.data.files);
+            console.log({bucket_id: this.$route.params.id});
+
             this.upload(file, 'file', this.model.data.files, {bucket_id: this.$route.params.id});
         },
         uploadFileByLink() {
-
+            this.uploadByLink('http://212.183.159.230/iconDownload-10MB.png',{bucket_id: this.$route.params.id});
         }
     }
 }

@@ -22,3 +22,5 @@ mix.postCss('resources/css/app.css', 'public/css', [
     proxy: 'clixode2.local',
 })
 .webpackConfig(require('./webpack.config'));
+
+mix.disableNotifications();

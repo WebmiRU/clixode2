@@ -1,5 +1,8 @@
 <template>
-    <h1>Image processor index</h1>
+    <h1>
+        <router-link :to="{ name: 'image-processor.edit', params: {id: 'create'}}" class="btn btn-primary">+</router-link>
+        Image processors
+    </h1>
 
     <table class="table table-striped">
         <thead>
@@ -32,6 +35,14 @@ export default {
         return {
             dataGetUrl: '/api/image-processor',
         };
+    },
+    methods: {
+        // f1: async function() {
+        //     console.log(await this.request('GET', '/api/image-processor/create'));
+        // }
+    },
+    mounted() {
+
     },
 }
 </script>

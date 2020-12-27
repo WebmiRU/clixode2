@@ -54,7 +54,7 @@
         </tbody>
     </table>
 
-    <button @click="submit" class="btn btn-success">Update</button>
+    <button @click="submit" class="btn btn-success">Save / Create</button>
 </template>
 
 <script>
@@ -68,10 +68,21 @@ export default {
         return {
             dataUrl: '/api/image-processor',
             actionIdx: -1,
+            model: {
+                data: {
+                    id: null,
+                    title: null,
+                    description: null,
+                    actions: [],
+                }
+            }
         };
     },
     methods: {
 
-    }
+    },
+    mounted() {
+
+    },
 }
 </script>

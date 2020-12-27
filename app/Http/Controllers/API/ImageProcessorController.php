@@ -24,17 +24,25 @@ class ImageProcessorController extends Controller
 
     public function get(int $id): JsonResource
     {
-        $model = ImageProcessor::with('actions.params', 'actionParamValues')->find($id);
+        $model = ImageProcessor::query()
+            ->with('actions.params')
+            ->with('actionParamValues')
+            ->find($id);
 
         return new ImageProcessorResource($model);
     }
 
     public function post(Request $request): JsonResource
     {
+        $model = ImageProcessor::query()
+            ->create($request->all())
+            ->load('actions.params')
+            ->load('actionParamValues');
 
+        return new IndexResource($model);
     }
 
-    public function put(Request $request, int $id)
+    public function put(Request $request, int $id): JsonResource
     {
         $model = ImageProcessor::find($id);
 
@@ -50,13 +58,15 @@ class ImageProcessorController extends Controller
             foreach ($request->get('actions', []) as $action) {
                 foreach ($action['params'] as $param) {
                     if (mb_strlen($param['value'])) {
-                        ImageProcessorActionParamValue::updateOrCreate([
-                            'image_processor_action_param_id' => $param['id'],
-                            'image_processor_id' => $model->id,
-                        ],
-                        [
-                            'value' => $param['value'],
-                        ]);
+                        ImageProcessorActionParamValue::updateOrCreate(
+                            [
+                                'image_processor_action_param_id' => $param['id'],
+                                'image_processor_id' => $model->id,
+                            ],
+                            [
+                                'value' => $param['value'],
+                            ]
+                        );
                     }
                 }
             }

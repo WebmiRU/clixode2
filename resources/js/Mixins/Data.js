@@ -54,9 +54,9 @@ export default {
             });
         },
         submit: async function () {
-            if (this.dataCreate) {
+            if (this.$route.params.id === 'create') {
 
-                let response = await this.post(this.dataPostUrl, this.model.data);
+                let response = await this.request('POST', this.dataPostUrl, this.model.data);
                 let dataPostBackUrl = this.dataUrl.replace(/^\/api/, '') + '/' + response.data.id
 
                 this.$router.push(dataPostBackUrl);
@@ -124,6 +124,7 @@ export default {
         },
     },
     async mounted() {
+        console.log(this.dataGetUrl);
         //Data URL's
         if (this.dataUrl) {
             this.dataGetUrl = this.dataUrl + '/' + this.$route.params.id;
@@ -132,7 +133,9 @@ export default {
             this.dataPostUrl = this.dataUrl;
         }
 
-        if (this.dataCreate) {
+        // console.log(this.$route);
+
+        if (this.$route.params.id === 'create') {
             this.loading = 0;
         } else {
             if (this.dataGetUrl) {

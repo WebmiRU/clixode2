@@ -85,6 +85,10 @@ class FileController extends Controller
         }
     }
 
+    public function link(){
+
+    }
+
     protected function generateBucketFileUri(): string
     {
         for ($i = 0; $i < 1000; $i++) {

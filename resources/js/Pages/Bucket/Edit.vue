@@ -80,6 +80,9 @@ export default {
             let file = this.$refs.upload_file.files[0];
 
             this.upload(file, 'file', this.model.data.files, {bucket_id: this.$route.params.id});
+        },
+        uploadFileByLink() {
+
         }
     }
 }

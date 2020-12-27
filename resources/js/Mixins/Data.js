@@ -155,6 +155,9 @@ export default {
             formData.append('file', file);
             xhr.send(formData);
         },
+
+        uploadByLink(){},
+
         hookUploadImage(image) {
         },
         dataHookGetCompleted() {

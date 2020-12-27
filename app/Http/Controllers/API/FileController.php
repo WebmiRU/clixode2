@@ -5,8 +5,10 @@ namespace App\Http\Controllers\API;
 use App\Helpers\FileHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\IndexResource;
+use App\Jobs\DownloadFileLink;
 use App\Models\BucketFile;
 use App\Models\File;
+use App\Models\HttpDownloadTask;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -86,7 +88,16 @@ class FileController extends Controller
     }
 
     public function link(){
+        $url = 'http://212.183.159.230/iconDownload-10MB.png';
 
+        HttpDownloadTask::create([
+            'url' => $url,
+            'progress' => 0,
+            'bucket_id' => 1,
+            'ref_http_download_task_status_id' => 1,
+        ]);
+
+        DownloadFileLink::dispatch($url);
     }
 
     protected function generateBucketFileUri(): string

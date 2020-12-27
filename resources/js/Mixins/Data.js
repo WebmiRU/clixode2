@@ -45,7 +45,7 @@ export default {
                 // body: JSON.stringify(model),
             }
 
-            if(model) {
+            if (model) {
                 init.body = JSON.stringify(model);
             }
 
@@ -112,16 +112,6 @@ export default {
             formData.append('file', file);
             xhr.send(formData);
         },
-        hookUploadImage(image) {
-        },
-        dataHookGetCompleted() {
-        },
-        dataHookPostCompleted() {
-        },
-        dataHookPutCompleted() {
-        },
-        dataHookDeleteCompleted() {
-        },
     },
     async mounted() {
         console.log(this.dataGetUrl);
@@ -133,18 +123,14 @@ export default {
             this.dataPostUrl = this.dataUrl;
         }
 
-        // console.log(this.$route);
-
         if (this.$route.params.id === 'create') {
             this.loading = 0;
-        } else {
-            if (this.dataGetUrl) {
-                let response = await this.request('GET', this.dataGetUrl);
+        } else if (this.dataGetUrl) {
+            let response = await this.request('GET', this.dataGetUrl);
 
-                this.model.data = response.data;
-                this.loading = false;
-                this.dataPutUrl = this.dataGetUrl;
-            }
+            this.model.data = response.data;
+            this.loading = false;
+            this.dataPutUrl = this.dataGetUrl;
         }
     },
 }

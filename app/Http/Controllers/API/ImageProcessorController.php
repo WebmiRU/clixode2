@@ -7,19 +7,20 @@ use App\Http\Resources\IndexResource;
 use App\Models\ImageProcessor;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class ImageProcessorController extends Controller
 {
-    public function index(): JsonResource
+    public function index(): ResourceCollection
     {
         $model = ImageProcessor::all();
 
-        return new IndexResource($model);
+        return IndexResource::collection($model);
     }
 
     public function get(int $id): JsonResource
     {
-        $model = ImageProcessor::find($id);
+        $model = ImageProcessor::with('actions')->find($id);
 
         return new IndexResource($model);
     }

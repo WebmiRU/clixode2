@@ -11,6 +11,7 @@ use App\Models\ImageProcessorActionParamValue;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
@@ -46,6 +47,7 @@ class ImageProcessorController extends Controller
     public function put(Request $request, int $id): JsonResource
     {
         $model = ImageProcessor::find($id);
+        $actionIds = Arr::pluck($request->get('actions', []), 'id');
 
         DB::beginTransaction();
 
@@ -56,9 +58,12 @@ class ImageProcessorController extends Controller
                 ]);
             }
 
+            //@TODO такой вариант не даёт добавить несколько одинаковых действий
+            $model->actions()->sync($actionIds);
+
             foreach ($request->get('actions', []) as $action) {
                 foreach ($action['params'] as $param) {
-                    if (mb_strlen($param['value'])) {
+                    if (mb_strlen($param['value'] ?? null)) {
                         ImageProcessorActionParamValue::updateOrCreate(
                             [
                                 'image_processor_action_param_id' => $param['id'],
@@ -75,6 +80,7 @@ class ImageProcessorController extends Controller
             DB::commit();
         } catch (Throwable $e) {
             //@TODO Return error
+            dd($e->getMessage());
             DB::rollBack();
         }
 

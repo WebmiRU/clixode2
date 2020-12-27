@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ImageProcessorResource;
 use App\Http\Resources\IndexResource;
 use App\Models\ImageProcessor;
+use App\Models\ImageProcessorAction;
 use App\Models\ImageProcessorActionParamValue;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -80,5 +81,15 @@ class ImageProcessorController extends Controller
         $model = ImageProcessor::with('actions.params', 'actionParamValues')->find($id);
 
         return new ImageProcessorResource($model);
+    }
+
+    public function actions(): JsonResource
+    {
+        $model = ImageProcessorAction::query()
+            ->with('params')
+            ->orderBy('id', 'desc')
+            ->get();
+
+        return new IndexResource($model);
     }
 }

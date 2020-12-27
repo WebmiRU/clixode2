@@ -6,7 +6,18 @@
         <input id="title" v-model="model.data.title" class="form-control" name="title" type="text"/>
     </div>
 
-    <h2>Actions</h2>
+    <h2>
+        <span class="dropdown">
+            <button class="btn btn-outline-primary" data-bs-toggle="dropdown">
+                +
+            </button>
+
+            <ul class="dropdown-menu">
+                <li v-for="(v, idx) in imageProcessorActions.data" @click="actionAdd(idx)" class="dropdown-item">{{ v.name }} ({{v.description}})</li>
+            </ul>
+        </span>
+        Actions
+    </h2>
 
     <template v-if="actionIdx >= 0">
         <h4>Action edit {{actionIdx}}</h4>
@@ -59,15 +70,14 @@
 
 <script>
 import GetData from "../../Mixins/Data";
-import Button from "@/Jetstream/Button";
 
 export default {
-    components: {Button},
     mixins: [GetData],
     data() {
         return {
             dataUrl: '/api/image-processor',
             actionIdx: -1,
+            imageProcessorActions: [],
             model: {
                 data: {
                     id: null,
@@ -79,10 +89,12 @@ export default {
         };
     },
     methods: {
-
+        actionAdd(idx) {
+            this.model.data.actions.push(this.imageProcessorActions.data[idx]);
+        }
     },
-    mounted() {
-
+    async mounted() {
+        this.imageProcessorActions = await this.request('GET', '/api/image-processor/actions');
     },
 }
 </script>

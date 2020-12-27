@@ -114,7 +114,6 @@ export default {
         },
     },
     async mounted() {
-        console.log(this.dataGetUrl);
         //Data URL's
         if (this.dataUrl) {
             this.dataGetUrl = this.dataUrl + '/' + this.$route.params.id;

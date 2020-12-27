@@ -15,6 +15,17 @@ class ImageProcessorResource extends JsonResource
      */
     public function toArray($request): array
     {
-        return parent::toArray($request);
+        foreach ($this->actions as &$action) {
+            foreach ($action->params as &$param) {
+                $param->value = $this->actionParamValues->where('image_processor_action_param_id', $param->id)->first()->value ?? null;
+            }
+        }
+
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'description' => $this->description,
+            'actions' => $this->actions,
+        ];
     }
 }

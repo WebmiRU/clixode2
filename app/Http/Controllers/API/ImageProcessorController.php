@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ImageProcessorResource;
 use App\Http\Resources\IndexResource;
 use App\Models\ImageProcessor;
 use Illuminate\Http\Request;
@@ -20,13 +21,27 @@ class ImageProcessorController extends Controller
 
     public function get(int $id): JsonResource
     {
-        $model = ImageProcessor::with('actions')->find($id);
+        $model = ImageProcessor::with('actions.params', 'actionParamValues')->find($id);
 
-        return new IndexResource($model);
+        return new ImageProcessorResource($model);
     }
 
     public function post(Request $request): JsonResource
     {
 
+    }
+
+    public function put(Request $request, int $id) {
+        $model = ImageProcessor::find($id);
+
+        if($model) {
+            $model->update([
+                'title' => $request->get('title'),
+            ]);
+        }
+
+        $model = ImageProcessor::with('actions.params', 'actionParamValues')->find($id);
+
+        return new ImageProcessorResource($model);
     }
 }

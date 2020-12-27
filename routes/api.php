@@ -37,10 +37,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/', [ImageController::class, 'post'])->name('post');
     });
 
-    //Images
+    //Image processors
     Route::group(['prefix' => 'image-processor', 'as' => 'image-processor.'], function () {
         Route::get('/', [ImageProcessorController::class, 'index'])->name('index');
         Route::get('{id}', [ImageProcessorController::class, 'get'])->name('get');
         Route::post('/', [ImageProcessorController::class, 'post'])->name('post');
+        Route::put('{id}', [ImageProcessorController::class, 'put'])->name('put');
     });
 });

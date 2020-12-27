@@ -8,7 +8,30 @@
 
     <h2>Actions</h2>
 
-    <router-view></router-view>
+    <template v-if="actionIdx >= 0">
+        <h4>Action edit {{actionIdx}}</h4>
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th class="narrow">Name</th>
+                <th>Value</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr v-for="v in model.data.actions[actionIdx].params">
+                <td>{{ v.name }}</td>
+                <td>
+                    <input type="text" v-model="v.value" class="form-control" />
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+
+        <button @click="actionIdx = -1" class="btn btn-success">OK</button>
+    </template>
 
     <table class="table table-striped">
         <thead>
@@ -20,26 +43,31 @@
         </thead>
         <tbody>
 
-        <tr v-for="v in model.data.actions">
+        <tr v-for="(v, idx) in model.data.actions">
             <td>{{ v.name }}</td>
             <td>{{ v.description }}</td>
             <td>
-                <router-link :to="{ name: 'image-processor.action.edit', params: {actionId: v.id}}" class="nav-link">Edit</router-link>
+                <button @click="actionIdx = idx" class="btn btn-warning">Edit</button>
             </td>
         </tr>
 
         </tbody>
     </table>
+
+    <button @click="submit" class="btn btn-success">Update</button>
 </template>
 
 <script>
 import GetData from "../../Mixins/Data";
+import Button from "@/Jetstream/Button";
 
 export default {
+    components: {Button},
     mixins: [GetData],
     data() {
         return {
-            dataGetUrl: '/api/image-processor/' + this.$route.params.id,
+            dataUrl: '/api/image-processor',
+            actionIdx: -1,
         };
     },
     methods: {

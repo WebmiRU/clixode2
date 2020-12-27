@@ -15,4 +15,8 @@ class ImageProcessorAction extends Model
     public function params() {
         return $this->hasMany(ImageProcessorActionParam::class, 'image_processor_action_id', 'id');
     }
+//
+//    public function paramValues() {
+//        return $this->hasMany(\App\Models\Views\ImageProcessorActionParamValue::class, '', 'id')
+//    }
 }

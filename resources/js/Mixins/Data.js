@@ -13,6 +13,7 @@ export default {
             dataPostBackUrl: null, //URL для перехода после успешного POST'а
             dataUploadImageUrl: '/api/image',
             dataUploadFileUrl: '/api/file',
+            dataUploadFileByLinkUrl: '/api/file/link',
             dataUploadImageProgress: [],
         }
     },
@@ -156,10 +157,11 @@ export default {
             xhr.send(formData);
         },
 
-        async uploadByLink(url, data){
+        async uploadByLink(data){
             //запрос POST
-            this.request('POST',);
+            let response = await this.request('POST', this.dataUploadFileByLinkUrl, data);
 
+            console.log(1);
             //запрос статуса
         },
 

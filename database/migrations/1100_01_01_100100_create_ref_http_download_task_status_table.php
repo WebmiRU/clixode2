@@ -18,17 +18,6 @@ class CreateRefHttpDownloadTaskStatusTable extends Migration
             $table->integer('id')->primary();
             $table->string('title');
         });
-
-        DB::table('ref_http_download_task_status')->insert([
-            [
-                'id' => 1,
-                'title' => 'Новая задача',
-            ],
-            [
-                'id' => 10,
-                'title' => 'Завершенная задача',
-            ],
-        ]);
     }
 
     /**

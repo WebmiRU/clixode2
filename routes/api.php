@@ -28,6 +28,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::group(['prefix' => 'file', 'as' => 'file.'], function () {
         Route::get('{uri}', [FileController::class, 'get'])->name('get');
         Route::post('/', [FileController::class, 'post'])->name('post');
+        Route::post('link', [FileController::class, 'link'])->name('link');
     });
 
     //Images

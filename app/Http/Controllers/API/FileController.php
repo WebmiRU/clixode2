@@ -87,17 +87,21 @@ class FileController extends Controller
         }
     }
 
-    public function link(){
-        $url = 'http://212.183.159.230/iconDownload-10MB.png';
+    public function link(Request $request)
+    {
+//        $tmpFile = fopen(storage_path('hhh'), 'w+');
 
-        HttpDownloadTask::create([
+        $url = $request->get('url');
+        $bucketId = $request->get('bucket_id');
+
+        $task = HttpDownloadTask::create([
             'url' => $url,
             'progress' => 0,
-            'bucket_id' => 1,
+            'bucket_id' => $bucketId,
             'ref_http_download_task_status_id' => 1,
         ]);
 
-        DownloadFileLink::dispatch($url);
+        DownloadFileLink::dispatch($url, $task, $bucketId);
 
         return 1;
     }

@@ -13,8 +13,8 @@
             Upload file
             <input ref="upload_file" @change="uploadFile()" multiple name="file" type="file" style="display: none"/>
         </label>
-
-        <button class="btn btn-success" type="submit">Upload by link</button>
+<!--{{uploadFileByLink()}}-->
+        <button class="btn btn-success" @click="uploadFileByLink()">Upload by link12</button>
     </div>
 
     <table class="table table-striped">
@@ -86,7 +86,8 @@ export default {
             this.upload(file, 'file', this.model.data.files, {bucket_id: this.$route.params.id});
         },
         uploadFileByLink() {
-            this.uploadByLink('http://212.183.159.230/iconDownload-10MB.png',{bucket_id: this.$route.params.id});
+            console.log(122);
+            this.uploadByLink({bucket_id: this.$route.params.id, url: 'https://speed.hetzner.de/100MB.bin'});
         }
     }
 }

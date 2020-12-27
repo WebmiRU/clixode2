@@ -21,11 +21,15 @@ class CreateBucketFileTable extends Migration
             $table->text('uri')->nullable()->comment('URI');
             $table->timestamps();
 
-            $table->foreign('bucket_id')->references('id')->on('bucket')
-                ->onUpdate('CASCADE')->onDelete('CASCADE');
+            $table->foreign('bucket_id')
+                ->references('id')->on('bucket')
+                ->onUpdate('CASCADE')
+                ->onDelete('CASCADE');
 
-            $table->foreign('file_id')->references('id')->on('file')
-                ->onUpdate('CASCADE')->onDelete('CASCADE');
+            $table->foreign('file_id')
+                ->references('id')->on('file')
+                ->onUpdate('CASCADE')
+                ->onDelete('CASCADE');
         });
     }
 

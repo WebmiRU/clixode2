@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\BucketController;
 use App\Http\Controllers\API\FileController;
 use App\Http\Controllers\API\ImageController;
+use App\Http\Controllers\API\ImageProcessorController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,5 +35,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::group(['prefix' => 'image', 'as' => 'image.'], function () {
         Route::get('{uri}', [ImageController::class, 'get'])->name('get');
         Route::post('/', [ImageController::class, 'post'])->name('post');
+    });
+
+    //Images
+    Route::group(['prefix' => 'image-processor', 'as' => 'image-processor.'], function () {
+        Route::get('/', [ImageProcessorController::class, 'index'])->name('index');
+        Route::get('{id}', [ImageProcessorController::class, 'get'])->name('get');
+        Route::post('/', [ImageProcessorController::class, 'post'])->name('post');
     });
 });

@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRefHttpDownloadTaskStatusTable extends Migration
+class CreateRefDownloadTaskStatusTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,10 +14,12 @@ class CreateRefHttpDownloadTaskStatusTable extends Migration
      */
     public function up()
     {
-        Schema::create('ref_http_download_task_status', function (Blueprint $table) {
+        Schema::create('ref.download_task_status', function (Blueprint $table) {
             $table->integer('id')->primary();
             $table->string('title');
         });
+
+        DB::statement("COMMENT ON TABLE download_task IS 'Статус задачи скачивания'");
     }
 
     /**
@@ -27,6 +29,6 @@ class CreateRefHttpDownloadTaskStatusTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ref_http_download_task_status');
+        Schema::dropIfExists('ref.download_task_status');
     }
 }

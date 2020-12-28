@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUsersTable extends Migration
+class CreateFileTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,17 +14,16 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('file', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->text('password');
-            $table->rememberToken();
+            $table->text('name')->comment('Имя');
+            $table->string('sha256', 64)->comment('Хэш 256');
+            $table->bigInteger('size')->comment('Размер');
+            $table->text('mime_type')->comment('Тип mime');
             $table->timestamps();
         });
 
-        DB::statement("COMMENT ON TABLE ref.country IS 'Страна'");
+        DB::statement("COMMENT ON TABLE file IS 'Файл'");
     }
 
     /**
@@ -34,6 +33,6 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('file');
     }
 }

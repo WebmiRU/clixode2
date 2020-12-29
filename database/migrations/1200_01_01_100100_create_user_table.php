@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUsersTable extends Migration
+class CreateUserTable extends Migration
 {
     /**
      * Run the migrations.
@@ -24,7 +24,7 @@ class CreateUsersTable extends Migration
             $table->timestamps();
         });
 
-        DB::statement("COMMENT ON TABLE user IS 'Пользователь'");
+        DB::statement("COMMENT ON TABLE public.user IS 'Пользователь'");
     }
 
     /**

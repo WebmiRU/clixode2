@@ -16,19 +16,15 @@ class CreateImageProcessorTable extends Migration
     {
         Schema::create('image_processor', function (Blueprint $table) {
             $table->id();
-            $table->integer('bucket_id')->comment('Id корзины');
-            $table->integer('image_id')->comment('Id изображения');
+            $table->text('title');
             $table->text('name')->comment('Имя');
+            $table->text('description')->comment('Описание');
             $table->text('uri')->nullable()->comment('URI');
+            $table->integer('user_id')->comment('Id пользователя');
             $table->timestamps();
 
-            $table->foreign('bucket_id')
-                ->references('id')->on('bucket')
-                ->onUpdate('CASCADE')
-                ->onDelete('CASCADE');
-
-            $table->foreign('image_id')
-                ->references('id')->on('image')
+            $table->foreign('user_id')
+                ->references('id')->on('user')
                 ->onUpdate('CASCADE')
                 ->onDelete('CASCADE');
         });

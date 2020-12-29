@@ -5,7 +5,7 @@ namespace Database\Seeders\Ref;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class HttpDownloadTaskStatusSeeder extends Seeder
+class DownloadTaskStatusSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,7 +14,7 @@ class HttpDownloadTaskStatusSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('ref.http_download_task_status')->insert([
+        DB::table('ref.download_task_status')->insert([
             [
                 'id' => 1,
                 'title' => 'Новая задача',

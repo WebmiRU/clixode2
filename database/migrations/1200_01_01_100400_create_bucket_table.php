@@ -23,12 +23,12 @@ class CreateBucketTable extends Migration
             $table->timestamps();
 
             $table->foreign('user_id')
-                ->references('id')->on('users')
+                ->references('id')->on('user')
                 ->onUpdate('CASCADE')
                 ->onDelete('SET NULL');
         });
 
-        DB::statement('ALTER TABLE bucket MODIFY COLUMN type USING enum_bucket_type');
+        DB::statement("ALTER TABLE bucket ALTER COLUMN type TYPE enum_bucket_type USING type::enum_bucket_type;");
         DB::statement("COMMENT ON TABLE bucket IS 'Корзина'");
     }
 

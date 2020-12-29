@@ -28,5 +28,7 @@ class DatabaseSeeder extends Seeder
             'user_id' => $user1->id,
             'type' => 'FILE'
         ]);
+
+        $this->call(AuthStatusTableSeeder::class);
     }
 }

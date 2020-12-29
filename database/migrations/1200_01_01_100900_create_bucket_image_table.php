@@ -16,10 +16,10 @@ class CreateBucketImageTable extends Migration
     {
         Schema::create('bucket_image', function (Blueprint $table) {
             $table->id();
+            $table->text('name')->comment('Имя');
+            $table->text('uri')->nullable()->comment('URI');
             $table->integer('bucket_id')->comment('Id корзины');
             $table->bigInteger('image_id')->comment('Id файла');
-            $table->text('uri')->nullable()->comment('URI');
-            $table->timestamps();
 
             $table->foreign('bucket_id')
                 ->references('id')->on('bucket')

@@ -16,10 +16,12 @@ class CreateRefDownloadTaskStatusTable extends Migration
     {
         Schema::create('ref.download_task_status', function (Blueprint $table) {
             $table->integer('id')->primary();
-            $table->string('title');
+            $table->text('title');
+            $table->text('key')->unique()->comment('Ключ');
+            $table->integer('sort')->default(0)->comment('Сортировка');
         });
 
-        DB::statement("COMMENT ON TABLE download_task IS 'Статус задачи скачивания'");
+        DB::statement("COMMENT ON TABLE ref.download_task_status IS 'Статус задачи скачивания'");
     }
 
     /**

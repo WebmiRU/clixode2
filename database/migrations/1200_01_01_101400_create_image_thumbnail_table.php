@@ -17,7 +17,7 @@ class CreateImageThumbnailTable extends Migration
         Schema::create('image_thumbnail', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('image_id')->comment('Id файла');
-            $table->bigInteger('image_processor_id')->comment('Id процессора изображений');
+            $table->integer('image_processor_id')->comment('Id процессора изображений');
             $table->timestamps();
 
             $table->foreign('image_id')

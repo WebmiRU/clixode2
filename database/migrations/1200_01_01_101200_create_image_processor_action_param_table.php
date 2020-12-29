@@ -20,8 +20,8 @@ class CreateImageProcessorActionParamTable extends Migration
             $table->text('name')->comment('Имя');
             $table->text('description')->comment('Описание');
             $table->text('type')->comment('Тип');
-            $table->bigInteger('image_processor_action_id')->comment('Id действия процессора изображения');
-            $table->timestamps();
+            $table->integer('image_processor_action_id')->comment('Id действия процессора изображения');
+
 
             $table->foreign('image_processor_action_id')
                 ->references('id')->on('image_processor_action')
@@ -29,7 +29,7 @@ class CreateImageProcessorActionParamTable extends Migration
                 ->onDelete('CASCADE');
         });
 
-        DB::statement('ALTER TABLE image_processor_action_param MODIFY COLUMN type USING enum_bucket_type');
+        DB::statement("ALTER TABLE image_processor_action_param ALTER COLUMN type TYPE enum_bucket_type USING type::enum_bucket_type;");
         DB::statement("COMMENT ON TABLE image_processor_action_param IS 'Параметр действия процессора изображений'");
     }
 

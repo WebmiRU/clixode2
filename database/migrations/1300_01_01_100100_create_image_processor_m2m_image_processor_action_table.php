@@ -19,8 +19,8 @@ class CreateImageProcessorM2mImageProcessorActionTable extends Migration
             $table->integer('image_processor_action_id');
             $table->timestamps();
 
-            $table->foreign('bucket_id')
-                ->references('id')->on('bucket')
+            $table->foreign('image_processor_id')
+                ->references('id')->on('image_processor')
                 ->onUpdate('CASCADE')
                 ->onDelete('CASCADE');
 

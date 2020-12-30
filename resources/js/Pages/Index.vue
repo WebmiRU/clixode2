@@ -13,6 +13,9 @@
                     <li class="nav-item">
                         <router-link class="nav-link" :to="{ name: 'bucket-image.edit', params: {id: '123'}}">Bucket image</router-link>
                     </li>
+                    <li class="nav-item">
+                        <router-link class="nav-link" :to="{ name: 'image-processor.index'}">Image processor</router-link>
+                    </li>
 <!--                                    <li class="nav-item">-->
 <!--                                        <a class="nav-link" href="#">Pricing</a>-->
 <!--                                    </li>-->

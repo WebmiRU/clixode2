@@ -11,4 +11,8 @@ class Image extends Model
 
     protected $table = 'image';
     protected $fillable = ['sha256', 'size', 'mime_type'];
+
+    public function thumbnails() {
+        return $this->hasMany(ImageThumbnail::class, 'image_id', 'id');
+    }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\BucketController;
+use App\Http\Controllers\API\BucketImageController;
 use App\Http\Controllers\API\FileController;
 use App\Http\Controllers\API\ImageController;
 use App\Http\Controllers\API\ImageProcessorController;
@@ -23,6 +24,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/', [BucketController::class, 'index'])->name('index');
         Route::get('{id}', [BucketController::class, 'get'])->name('get');
         Route::post('/', [BucketController::class, 'post'])->name('post');
+    });
+
+    //Bucket image
+    Route::group(['prefix' => 'bucket-image', 'as' => 'bucket-image.'], function () {
+        Route::get('/', [BucketImageController::class, 'index'])->name('index');
+        Route::get('{id}', [BucketImageController::class, 'get'])->name('get');
+        Route::post('/', [BucketImageController::class, 'post'])->name('post');
     });
 
     //Files

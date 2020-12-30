@@ -64,6 +64,12 @@ return [
             'root' => storage_path('images'),
             'visibility' => 'public',
         ],
+
+        'thumbnails' => [
+            'driver' => 'local',
+            'root' => storage_path('thumbnails'),
+            'visibility' => 'public',
+        ],
     ],
 
     /*

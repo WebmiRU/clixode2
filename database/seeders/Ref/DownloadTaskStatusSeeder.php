@@ -18,10 +18,12 @@ class DownloadTaskStatusSeeder extends Seeder
             [
                 'id' => 1,
                 'title' => 'Новая задача',
+                'key' => 'new',
             ],
             [
                 'id' => 10,
                 'title' => 'Завершенная задача',
+                'key' => 'completed',
             ],
         ]);
     }

@@ -14468,7 +14468,7 @@ __webpack_require__.r(__webpack_exports__);
     uploadFile: function uploadFile() {
       var file = this.$refs.upload_file.files[0];
       console.log(file);
-      console.log(this.model.data.files);
+      console.log(111, this.model.data.files);
       console.log({
         bucket_id: this.$route.params.id
       });
@@ -14477,7 +14477,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     uploadFileByLink: function uploadFileByLink() {
-      console.log(122);
+      // this.model.data.files.append();
       this.uploadByLink({
         bucket_id: this.$route.params.id,
         url: 'https://speed.hetzner.de/100MB.bin'

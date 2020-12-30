@@ -16,7 +16,6 @@ class CreateFileTable extends Migration
     {
         Schema::create('file', function (Blueprint $table) {
             $table->id();
-            $table->text('name')->comment('Имя');
             $table->string('sha256', 64)->comment('Хэш 256');
             $table->bigInteger('size')->comment('Размер');
             $table->text('mime_type')->comment('Тип mime');

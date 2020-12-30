@@ -80,13 +80,13 @@ export default {
             let file = this.$refs.upload_file.files[0];
 
             console.log(file);
-            console.log(this.model.data.files);
+            console.log(111, this.model.data.files);
             console.log({bucket_id: this.$route.params.id});
 
             this.upload(file, 'file', this.model.data.files, {bucket_id: this.$route.params.id});
         },
         uploadFileByLink() {
-            console.log(122);
+            // this.model.data.files.append();
             this.uploadByLink({bucket_id: this.$route.params.id, url: 'https://speed.hetzner.de/100MB.bin'});
         }
     }

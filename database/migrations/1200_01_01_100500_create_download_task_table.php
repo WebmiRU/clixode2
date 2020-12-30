@@ -19,7 +19,7 @@ class CreateDownloadTaskTable extends Migration
             $table->text('url')->comment('Ссылка, скачиваемого файла');
             $table->decimal('progress', 5, 2)->comment('Прогресс в процентах');
             $table->integer('bucket_id')->comment('Id корзины');
-            $table->integer('ref_download_task_status_id')->comment('Id справочника статусов скачиваемого задания');
+            $table->integer('ref_download_task_status_id')->default(1)->comment('Id справочника статусов скачиваемого задания');
             $table->timestamps();
 
             $table->foreign('ref_download_task_status_id')

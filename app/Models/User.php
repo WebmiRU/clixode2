@@ -14,12 +14,9 @@ class User extends Authenticatable
 {
     use HasApiTokens;
     use HasFactory;
-    use HasProfilePhoto;
     use Notifiable;
-    use TwoFactorAuthenticatable;
 
-
-    protected $table = 'image_thumbnail';
+    protected $table = 'user';
 
     /**
      * The attributes that are mass assignable.

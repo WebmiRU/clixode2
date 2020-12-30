@@ -8,7 +8,7 @@ use App\Http\Resources\IndexResource;
 use App\Jobs\DownloadFileLink;
 use App\Models\BucketFile;
 use App\Models\File;
-use App\Models\HttpDownloadTask;
+use App\Models\DownloadTask;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -94,7 +94,7 @@ class FileController extends Controller
         $url = $request->get('url');
         $bucketId = $request->get('bucket_id');
 
-        $task = HttpDownloadTask::create([
+        $task = DownloadTask::create([
             'url' => $url,
             'progress' => 0,
             'bucket_id' => $bucketId,

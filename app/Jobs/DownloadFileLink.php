@@ -2,10 +2,9 @@
 
 namespace App\Jobs;
 
-use App\Http\Controllers\FileController;
 use App\Models\BucketFile;
 use App\Models\File;
-use App\Models\HttpDownloadTask;
+use App\Models\DownloadTask;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -27,7 +26,7 @@ class DownloadFileLink implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(string $url, HttpDownloadTask $task, int $busketId)
+    public function __construct(string $url, DownloadTask $task, int $busketId)
     {
         $this->time = time();
         $this->url = $url;
@@ -111,13 +110,12 @@ class DownloadFileLink implements ShouldQueue
                 $mimeType = mime_content_type($metaDatas['uri']);
 
                 DB::transaction(function () use ($sourceFileName, $hash, $fileSize, $mimeType) {
-                    HttpDownloadTask::find($this->task->id)->update([
+                    DownloadTask::find($this->task->id)->update([
                         'progress' => 100,
                         'ref_http_download_task_status_id' => 10,
                     ]);
 
                     $file = File::create([
-                        'name' => $sourceFileName,
                         'sha256' => $hash,
                         'size' => $fileSize,
                         'mime_type' => $mimeType

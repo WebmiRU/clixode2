@@ -112,7 +112,7 @@ export default {
                 }
             });
 
-            formData.append('file', file);
+            formData.append(type, file);
             xhr.send(formData);
         },
 

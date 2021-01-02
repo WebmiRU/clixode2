@@ -11,7 +11,7 @@ import ImageProcessorActionEdit from './Pages/ImageProcessorAction/Edit'
 
 const routes = [
     {path: '/bucket', name: 'bucket.index', component: BucketIndex},
-    {path: '/bucket/:id', name: 'bucket.edit', component: BucketEdit},
+    {path: '/bucket-file/:id', name: 'bucket-file.edit', component: BucketEdit},
     {path: '/bucket-image/:id', name: 'bucket-image.edit', component: BucketImageEdit},
     {path: '/image-processor', name: 'image-processor.index', component: ImageProcessorIndex},
     {path: '/image-processor/:id', name: 'image-processor.edit', component: ImageProcessorEdit, children: [

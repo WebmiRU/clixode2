@@ -11,7 +11,7 @@ class BucketImage extends Model
     use HasFactory;
 
     protected $table = 'bucket_image';
-    protected $fillable = ['bucket_id', 'image_id', 'name', 'uri'];
+    protected $fillable = ['bucket_id', 'image_id', 'uri'];
 
     public function image(): HasOne
     {

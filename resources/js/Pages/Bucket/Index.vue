@@ -17,7 +17,8 @@
             <td>{{ v.title }}</td>
             <td>{{ v.type }}</td>
             <td>
-                <router-link :to="{ name: 'bucket.edit', params: {id: v.id}}" class="nav-link">Edit</router-link>
+                <router-link v-if="v.type == 'FILE'" :to="{ name: 'bucket-file.edit', params: {id: v.id}}" class="nav-link">Edit</router-link>
+                <router-link v-if="v.type == 'IMAGE'" :to="{ name: 'bucket-image.edit', params: {id: v.id}}" class="nav-link">Edit</router-link>
             </td>
         </tr>
 

@@ -13,6 +13,7 @@ export default {
             dataPostBackUrl: null, //URL для перехода после успешного POST'а
             dataUploadImageUrl: '/api/image',
             dataUploadFileUrl: '/api/file',
+            dataUploadFileUrlByUrl: '/api/file/link',
             dataUploadImageProgress: [],
         }
     },
@@ -95,6 +96,8 @@ export default {
                 if (xhr.readyState == 4) {
                     if (xhr.status == 200 || xhr.status == 201) {
                         //Картинка успешно загружена
+                        console.log(991);
+                        console.log(xhr.responseText);
                         let response = JSON.parse(xhr.responseText).data;
 
                         response.isNew = true;
@@ -110,14 +113,18 @@ export default {
             });
 
             formData.append('file', file);
+            console.log(222, formData);
             xhr.send(formData);
         },
 
-        async uploadByLink(data){
+        async uploadByUrl(data){
             //запрос POST
-            let response = await this.request('POST', this.dataUploadFileByLinkUrl, data);
+            let response = await this.request('POST', this.dataUploadFileUrlByUrl, data);
 
-            console.log(1);
+            let file = reactive({size: '-', mime_type:  '-'});
+            let upload = reactive({id: '-', name: 'task№ ' + response.data.id, file: file});
+            this.model.data.files.push(upload);
+
             //запрос статуса
         },
 

@@ -14467,20 +14467,15 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     uploadFile: function uploadFile() {
       var file = this.$refs.upload_file.files[0];
-      console.log(file);
-      console.log(111, this.model.data.files);
-      console.log({
-        bucket_id: this.$route.params.id
-      });
       this.upload(file, 'file', this.model.data.files, {
         bucket_id: this.$route.params.id
       });
     },
-    uploadFileByLink: function uploadFileByLink() {
-      // this.model.data.files.append();
-      this.uploadByLink({
+    uploadFileByUrl: function uploadFileByUrl() {
+      var url = this.$refs.upload_url.value;
+      this.uploadByUrl({
         bucket_id: this.$route.params.id,
-        url: 'https://speed.hetzner.de/100MB.bin'
+        url: url
       });
     }
   }
@@ -14693,10 +14688,17 @@ var _hoisted_4 = {
 var _hoisted_5 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Upload file ");
 
 var _hoisted_6 = {
+  "class": "mb-3"
+};
+var _hoisted_7 = {
+  ref: "upload_url",
+  type: "text"
+};
+var _hoisted_8 = {
   "class": "table table-striped"
 };
 
-var _hoisted_7 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("thead", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("tr", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("th", {
+var _hoisted_9 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("thead", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("tr", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("th", {
   "class": "narrow"
 }, "#"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("th", null, "Name"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("th", null, "Size"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("th", null, "MIME type"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("th", null, "Link"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("th", {
   "class": "narrow"
@@ -14706,32 +14708,32 @@ var _hoisted_7 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("
 /* HOISTED */
 );
 
-var _hoisted_8 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("td", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("a", {
+var _hoisted_10 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("td", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("a", {
   href: "#"
 }, "Download")], -1
 /* HOISTED */
 );
 
-var _hoisted_9 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("td", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("a", {
+var _hoisted_11 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("td", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("a", {
   "class": "btn btn-warning",
   href: "#"
 }, "Edit")], -1
 /* HOISTED */
 );
 
-var _hoisted_10 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("td", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("button", {
+var _hoisted_12 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("td", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("button", {
   "class": "btn btn-danger",
   type: "submit"
 }, "Delete")], -1
 /* HOISTED */
 );
 
-var _hoisted_11 = {
+var _hoisted_13 = {
   key: 1,
   colspan: "7"
 };
 
-var _hoisted_12 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("ul", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("        @foreach($model->images as $v)"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("        <li>{{$v->id}} / {{$v->image->sha256}}</li>"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("        @endforeach")], -1
+var _hoisted_14 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("ul", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("        @foreach($model->images as $v)"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("        <li>{{$v->id}} / {{$v->image->sha256}}</li>"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("        @endforeach")], -1
 /* HOISTED */
 );
 
@@ -14763,12 +14765,14 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     }
   }, null, 544
   /* HYDRATE_EVENTS, NEED_PATCH */
-  )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("{{uploadFileByLink()}}"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("button", {
+  )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("{{uploadFileByLink()}}")]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("input", _hoisted_7, null, 512
+  /* NEED_PATCH */
+  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("button", {
     "class": "btn btn-success",
     onClick: _cache[3] || (_cache[3] = function ($event) {
-      return $options.uploadFileByLink();
+      return $options.uploadFileByUrl();
     })
-  }, "Upload by link12")]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("table", _hoisted_6, [_hoisted_7, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("tbody", null, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.model.data.files, function (v) {
+  }, "Upload by link12")]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("table", _hoisted_8, [_hoisted_9, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("tbody", null, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.model.data.files, function (v) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("tr", null, [v.id ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
       key: 0
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(v.id), 1
@@ -14779,9 +14783,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     /* TEXT */
     ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(v.file.mime_type), 1
     /* TEXT */
-    ), _hoisted_8, _hoisted_9, _hoisted_10], 64
+    ), _hoisted_10, _hoisted_11, _hoisted_12], 64
     /* STABLE_FRAGMENT */
-    )) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("td", _hoisted_11, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("progress", {
+    )) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("td", _hoisted_13, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("progress", {
       value: v.progress,
       max: "100"
     }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(v.progress), 9
@@ -14789,7 +14793,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     , ["value"])]))]);
   }), 256
   /* UNKEYED_FRAGMENT */
-  ))])]), _hoisted_12], 64
+  ))])]), _hoisted_14], 64
   /* STABLE_FRAGMENT */
   );
 }
@@ -15304,6 +15308,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       //URL для перехода после успешного POST'а
       dataUploadImageUrl: '/api/image',
       dataUploadFileUrl: '/api/file',
+      dataUploadFileUrlByUrl: '/api/file/link',
       dataUploadImageProgress: []
     };
   },
@@ -15447,6 +15452,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         if (xhr.readyState == 4) {
           if (xhr.status == 200 || xhr.status == 201) {
             //Картинка успешно загружена
+            console.log(991);
+            console.log(xhr.responseText);
             var response = JSON.parse(xhr.responseText).data;
             response.isNew = true;
             Object.assign(upload, response);
@@ -15461,25 +15468,37 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }
       });
       formData.append('file', file);
+      console.log(222, formData);
       xhr.send(formData);
     },
-    uploadByLink: function uploadByLink(data) {
+    uploadByUrl: function uploadByUrl(data) {
       var _this = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3() {
-        var response;
+        var response, file, upload;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
                 _context3.next = 2;
-                return _this.request('POST', _this.dataUploadFileByLinkUrl, data);
+                return _this.request('POST', _this.dataUploadFileUrlByUrl, data);
 
               case 2:
                 response = _context3.sent;
-                console.log(1); //запрос статуса
+                file = (0,vue__WEBPACK_IMPORTED_MODULE_1__.reactive)({
+                  size: '-',
+                  mime_type: '-'
+                });
+                upload = (0,vue__WEBPACK_IMPORTED_MODULE_1__.reactive)({
+                  id: '-',
+                  name: 'task№ ' + response.data.id,
+                  file: file
+                });
 
-              case 4:
+                _this.model.data.files.push(upload); //запрос статуса
+
+
+              case 6:
               case "end":
                 return _context3.stop();
             }

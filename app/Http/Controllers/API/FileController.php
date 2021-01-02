@@ -89,21 +89,19 @@ class FileController extends Controller
 
     public function link(Request $request)
     {
-//        $tmpFile = fopen(storage_path('hhh'), 'w+');
-
         $url = $request->get('url');
         $bucketId = $request->get('bucket_id');
 
-        $task = DownloadTask::create([
+        $model = DownloadTask::create([
             'url' => $url,
             'progress' => 0,
             'bucket_id' => $bucketId,
-            'ref_http_download_task_status_id' => 1,
+            'ref_download_task_status_id' => 1,
         ]);
 
-        DownloadFileLink::dispatch($url, $task, $bucketId);
+        DownloadFileLink::dispatch($url, $model, $bucketId);
 
-        return 1;
+        return new IndexResource($model);
     }
 
     protected function generateBucketFileUri(): string

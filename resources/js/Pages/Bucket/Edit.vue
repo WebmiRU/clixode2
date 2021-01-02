@@ -14,7 +14,12 @@
             <input ref="upload_file" @change="uploadFile()" multiple name="file" type="file" style="display: none"/>
         </label>
 <!--{{uploadFileByLink()}}-->
-        <button class="btn btn-success" @click="uploadFileByLink()">Upload by link12</button>
+
+    </div>
+
+    <div class="mb-3">
+        <input ref="upload_url" type="text" />
+        <button class="btn btn-success" @click="uploadFileByUrl()">Upload by link12</button>
     </div>
 
     <table class="table table-striped">
@@ -79,15 +84,12 @@ export default {
         uploadFile() {
             let file = this.$refs.upload_file.files[0];
 
-            console.log(file);
-            console.log(111, this.model.data.files);
-            console.log({bucket_id: this.$route.params.id});
-
             this.upload(file, 'file', this.model.data.files, {bucket_id: this.$route.params.id});
         },
-        uploadFileByLink() {
-            // this.model.data.files.append();
-            this.uploadByLink({bucket_id: this.$route.params.id, url: 'https://speed.hetzner.de/100MB.bin'});
+        uploadFileByUrl() {
+            let url = this.$refs.upload_url.value;
+
+            this.uploadByUrl({bucket_id: this.$route.params.id, url: url});
         }
     }
 }

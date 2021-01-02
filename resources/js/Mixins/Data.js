@@ -113,7 +113,6 @@ export default {
             });
 
             formData.append('file', file);
-            console.log(222, formData);
             xhr.send(formData);
         },
 

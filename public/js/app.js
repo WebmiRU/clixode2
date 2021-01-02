@@ -15468,7 +15468,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }
       });
       formData.append('file', file);
-      console.log(222, formData);
       xhr.send(formData);
     },
     uploadByUrl: function uploadByUrl(data) {

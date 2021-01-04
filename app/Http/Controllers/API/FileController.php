@@ -89,6 +89,7 @@ class FileController extends Controller
 
     public function link(Request $request)
     {
+
         $url = $request->get('url');
         $bucketId = $request->get('bucket_id');
 

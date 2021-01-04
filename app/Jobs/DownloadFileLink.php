@@ -103,8 +103,6 @@ class DownloadFileLink implements ShouldQueue
                     $sourceFileName = basename($this->url);
                 }
 
-                dump($sourceFileName);
-
                 $metaDatas = stream_get_meta_data($tmpFile);
                 $fileSize = filesize($metaDatas['uri']);
                 $mimeType = mime_content_type($metaDatas['uri']);

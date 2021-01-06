@@ -22,6 +22,46 @@
         <button class="btn btn-success" @click="uploadFileByUrl()">Upload by link12</button>
     </div>
 
+
+<!--Download tasks -->
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th class="narrow">#</th>
+            <th>Url</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr v-for="v in model.data.tasks">
+            <template v-if="v.id">
+                <td>{{ v.id }}</td>
+                <td>{{ v.url }}</td>
+                <td>{{ v.status. }}</td>
+                <td>{{ v.file.mime_type }}</td>
+                <td>
+                    <a href="#">Download</a>
+                </td>
+                <td>
+                    <a class="btn btn-warning" href="#">Edit</a>
+                </td>
+                <td>
+                    <button class="btn btn-danger" type="submit">Delete</button>
+                </td>
+            </template>
+            <template v-else>
+                <td colspan="7">
+                    <progress :value="v.progress" max="100">{{v.progress}}</progress>
+                </td>
+            </template>
+        </tr>
+
+        </tbody>
+    </table>
+
+
+<!--Files-->
     <table class="table table-striped">
         <thead>
         <tr>
@@ -77,7 +117,7 @@ export default {
     data() {
         return {
             dataGetUrl: '/api/bucket/' + this.$route.params.id,
-            model: {data: {files: [], images: []}},
+            model: {data: {files: [], images: [], tasks:[]}},
         };
     },
     methods: {

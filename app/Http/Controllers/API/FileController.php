@@ -4,11 +4,13 @@ namespace App\Http\Controllers\API;
 
 use App\Helpers\FileHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\BucketFile\TypeBucketFileResource;
+use App\Http\Resources\DownloadTask\TypeDownloadTaskResource;
 use App\Http\Resources\IndexResource;
 use App\Jobs\DownloadFileLink;
 use App\Models\BucketFile;
-use App\Models\File;
 use App\Models\DownloadTask;
+use App\Models\File;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -89,20 +91,37 @@ class FileController extends Controller
 
     public function link(Request $request)
     {
-
         $url = $request->get('url');
+        $file = File::where('sha256', hash("sha256", $url))->first();
         $bucketId = $request->get('bucket_id');
 
-        $model = DownloadTask::create([
-            'url' => $url,
-            'progress' => 0,
+        if (!$file) {
+            $model = DownloadTask::create([
+                'url' => $url,
+                'progress' => 0,
+                'bucket_id' => $bucketId,
+                'ref_download_task_status_id' => 1,
+            ]);
+
+            DownloadFileLink::dispatch($url, $model, $bucketId);
+
+            return new TypeDownloadTaskResource($model);
+        }
+
+        $fileName = basename($url);
+
+        $model = BucketFile::create([
             'bucket_id' => $bucketId,
-            'ref_download_task_status_id' => 1,
+            'file_id' => $file->id,
+            'name' => $fileName,
+            'uri' => $this->generateBucketFileUri(),
         ]);
 
-        DownloadFileLink::dispatch($url, $model, $bucketId);
+        $model->load('file', 'bucket');
 
-        return new IndexResource($model);
+//        dd(new TypeBucketFileResource($model));
+
+        return new TypeBucketFileResource($model);
     }
 
     protected function generateBucketFileUri(): string

@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Models\Ref\DownloadTaskStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class DownloadTask extends Model
 {
@@ -18,4 +20,8 @@ class DownloadTask extends Model
         'bucket_id',
     ];
 
+    public function status(): HasOne
+    {
+        return $this->hasOne(DownloadTaskStatus::class, 'id', 'file_id');
+    }
 }

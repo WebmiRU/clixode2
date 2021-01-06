@@ -14459,7 +14459,8 @@ __webpack_require__.r(__webpack_exports__);
       model: {
         data: {
           files: [],
-          images: []
+          images: [],
+          tasks: []
         }
       }
     };
@@ -14687,145 +14688,9 @@ __webpack_require__.r(__webpack_exports__);
 /*!****************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/Pages/Bucket/Edit.vue?vue&type=template&id=6a363496 ***!
   \****************************************************************************************************************************************************************************************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (() => {
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "render": () => /* binding */ render
-/* harmony export */ });
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
-
-var _hoisted_1 = {
-  "class": "mb-3"
-};
-
-var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("label", {
-  "class": "form-label",
-  "for": "title"
-}, "Title", -1
-/* HOISTED */
-);
-
-var _hoisted_3 = {
-  "class": "mb-3"
-};
-var _hoisted_4 = {
-  "class": "btn btn-success"
-};
-
-var _hoisted_5 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Upload file ");
-
-var _hoisted_6 = {
-  "class": "mb-3"
-};
-var _hoisted_7 = {
-  ref: "upload_url",
-  type: "text"
-};
-var _hoisted_8 = {
-  "class": "table table-striped"
-};
-
-var _hoisted_9 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("thead", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("tr", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("th", {
-  "class": "narrow"
-}, "#"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("th", null, "Name"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("th", null, "Size"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("th", null, "MIME type"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("th", null, "Link"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("th", {
-  "class": "narrow"
-}, "Edit"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("th", {
-  "class": "narrow"
-}, "Delete")])], -1
-/* HOISTED */
-);
-
-var _hoisted_10 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("td", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("a", {
-  href: "#"
-}, "Download")], -1
-/* HOISTED */
-);
-
-var _hoisted_11 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("td", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("a", {
-  "class": "btn btn-warning",
-  href: "#"
-}, "Edit")], -1
-/* HOISTED */
-);
-
-var _hoisted_12 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("td", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("button", {
-  "class": "btn btn-danger",
-  type: "submit"
-}, "Delete")], -1
-/* HOISTED */
-);
-
-var _hoisted_13 = {
-  key: 1,
-  colspan: "7"
-};
-
-var _hoisted_14 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("ul", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("        @foreach($model->images as $v)"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("        <li>{{$v->id}} / {{$v->image->sha256}}</li>"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("        @endforeach")], -1
-/* HOISTED */
-);
-
-function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("h1", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.model.data.title), 1
-  /* TEXT */
-  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_1, [_hoisted_2, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("input", {
-    id: "title",
-    "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
-      return $data.model.data.title = $event;
-    }),
-    "class": "form-control",
-    name: "title",
-    type: "text"
-  }, null, 512
-  /* NEED_PATCH */
-  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.model.data.title]])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.fileUploads) + " ", 1
-  /* TEXT */
-  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("label", _hoisted_4, [_hoisted_5, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("input", {
-    ref: "upload_file",
-    onChange: _cache[2] || (_cache[2] = function ($event) {
-      return $options.uploadFile();
-    }),
-    multiple: "",
-    name: "file",
-    type: "file",
-    style: {
-      "display": "none"
-    }
-  }, null, 544
-  /* HYDRATE_EVENTS, NEED_PATCH */
-  )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("{{uploadFileByLink()}}")]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("input", _hoisted_7, null, 512
-  /* NEED_PATCH */
-  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("button", {
-    "class": "btn btn-success",
-    onClick: _cache[3] || (_cache[3] = function ($event) {
-      return $options.uploadFileByUrl();
-    })
-  }, "Upload by link12")]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("table", _hoisted_8, [_hoisted_9, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("tbody", null, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.model.data.files, function (v) {
-    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("tr", null, [v.id ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
-      key: 0
-    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(v.id), 1
-    /* TEXT */
-    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(v.name), 1
-    /* TEXT */
-    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(v.file.size), 1
-    /* TEXT */
-    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(v.file.mime_type), 1
-    /* TEXT */
-    ), _hoisted_10, _hoisted_11, _hoisted_12], 64
-    /* STABLE_FRAGMENT */
-    )) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("td", _hoisted_13, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("progress", {
-      value: v.progress,
-      max: "100"
-    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(v.progress), 9
-    /* TEXT, PROPS */
-    , ["value"])]))]);
-  }), 256
-  /* UNKEYED_FRAGMENT */
-  ))])]), _hoisted_14], 64
-  /* STABLE_FRAGMENT */
-  );
-}
+throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nSyntaxError: /home/grigoriy/Projects/clixode2.local/resources/js/Pages/Bucket/Edit.vue: Unexpected token (127:69)\n\n\u001b[0m \u001b[90m 125 | \u001b[39m                  _createVNode(\u001b[32m\"td\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36mnull\u001b[39m\u001b[33m,\u001b[39m _toDisplayString(v\u001b[33m.\u001b[39mid)\u001b[33m,\u001b[39m \u001b[35m1\u001b[39m \u001b[90m/* TEXT */\u001b[39m)\u001b[33m,\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 126 | \u001b[39m                  _createVNode(\u001b[32m\"td\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36mnull\u001b[39m\u001b[33m,\u001b[39m _toDisplayString(v\u001b[33m.\u001b[39murl)\u001b[33m,\u001b[39m \u001b[35m1\u001b[39m \u001b[90m/* TEXT */\u001b[39m)\u001b[33m,\u001b[39m\u001b[0m\n\u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 127 | \u001b[39m                  _createVNode(\u001b[32m\"td\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36mnull\u001b[39m\u001b[33m,\u001b[39m _toDisplayString(v\u001b[33m.\u001b[39mstatus\u001b[33m.\u001b[39m)\u001b[33m,\u001b[39m \u001b[35m1\u001b[39m \u001b[90m/* TEXT */\u001b[39m)\u001b[33m,\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m     | \u001b[39m                                                                     \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 128 | \u001b[39m                  _createVNode(\u001b[32m\"td\"\u001b[39m\u001b[33m,\u001b[39m \u001b[36mnull\u001b[39m\u001b[33m,\u001b[39m _toDisplayString(v\u001b[33m.\u001b[39mfile\u001b[33m.\u001b[39mmime_type)\u001b[33m,\u001b[39m \u001b[35m1\u001b[39m \u001b[90m/* TEXT */\u001b[39m)\u001b[33m,\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 129 | \u001b[39m                  _hoisted_10\u001b[33m,\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 130 | \u001b[39m                  _hoisted_11\u001b[33m,\u001b[39m\u001b[0m\n    at Parser._raise (/home/grigoriy/Projects/clixode2.local/node_modules/@babel/parser/lib/index.js:748:17)\n    at Parser.raiseWithData (/home/grigoriy/Projects/clixode2.local/node_modules/@babel/parser/lib/index.js:741:17)\n    at Parser.raise (/home/grigoriy/Projects/clixode2.local/node_modules/@babel/parser/lib/index.js:735:17)\n    at Parser.unexpected (/home/grigoriy/Projects/clixode2.local/node_modules/@babel/parser/lib/index.js:9101:16)\n    at Parser.parseIdentifierName (/home/grigoriy/Projects/clixode2.local/node_modules/@babel/parser/lib/index.js:11344:18)\n    at Parser.parseIdentifier (/home/grigoriy/Projects/clixode2.local/node_modules/@babel/parser/lib/index.js:11317:23)\n    at Parser.parseMaybePrivateName (/home/grigoriy/Projects/clixode2.local/node_modules/@babel/parser/lib/index.js:10645:19)\n    at Parser.parseMember (/home/grigoriy/Projects/clixode2.local/node_modules/@babel/parser/lib/index.js:10208:63)\n    at Parser.parseSubscript (/home/grigoriy/Projects/clixode2.local/node_modules/@babel/parser/lib/index.js:10196:19)\n    at Parser.parseSubscripts (/home/grigoriy/Projects/clixode2.local/node_modules/@babel/parser/lib/index.js:10167:19)");
 
 /***/ }),
 
@@ -15641,6 +15506,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 2:
                 response = _context3.sent;
+                console.log(response);
+                _context3.t0 = response.type;
+                _context3.next = _context3.t0 === 'download_task' ? 7 : _context3.t0 === 'bucket_file' ? 8 : 12;
+                break;
+
+              case 7:
+                return _context3.abrupt("break", 13);
+
+              case 8:
                 file = (0,vue__WEBPACK_IMPORTED_MODULE_1__.reactive)({
                   size: '-',
                   mime_type: '-'
@@ -15651,10 +15525,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   file: file
                 });
 
-                _this.model.data.files.push(upload); //запрос статуса
+                _this.model.data.files.push(upload);
 
+                return _context3.abrupt("break", 13);
 
-              case 6:
+              case 12:
+                return _context3.abrupt("break", 13);
+
+              case 13:
               case "end":
                 return _context3.stop();
             }
@@ -16857,9 +16735,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "render": () => /* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Edit_vue_vue_type_template_id_6a363496__WEBPACK_IMPORTED_MODULE_0__.render
-/* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Edit_vue_vue_type_template_id_6a363496__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../../node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!../../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./Edit.vue?vue&type=template&id=6a363496 */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/Pages/Bucket/Edit.vue?vue&type=template&id=6a363496");
 
 

@@ -120,9 +120,24 @@ export default {
             //запрос POST
             let response = await this.request('POST', this.dataUploadFileUrlByUrl, data);
 
-            let file = reactive({size: '-', mime_type:  '-'});
-            let upload = reactive({id: '-', name: 'task№ ' + response.data.id, file: file});
-            this.model.data.files.push(upload);
+            console.log(response);
+
+            switch(response.type) {
+                case 'download_task':
+
+                    break;
+                case 'bucket_file':
+                    let file = reactive({size: '-', mime_type:  '-'});
+                    let upload = reactive({id: '-', name: 'task№ ' + response.data.id, file: file});
+                    this.model.data.files.push(upload);
+                    break;
+                default:
+                    break;
+
+
+            }
+            //
+
 
             //запрос статуса
         },

@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\FileHelper;
 use App\Models\BucketFile;
 use App\Models\File;
 use App\Models\DownloadTask;
@@ -11,6 +12,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class DownloadFileLink implements ShouldQueue
 {
@@ -72,11 +74,14 @@ class DownloadFileLink implements ShouldQueue
      *
      * @return void
      */
-//    public function handle(FileController $fileController)
     public function handle()
     {
-        $hash = hash("sha256", $this->url);
+        $sha256 = hash("sha256", $this->url);
         $tmpFile = tmpfile();
+        $metaData = stream_get_meta_data($tmpFile);
+        $filePath = $metaData['uri'];
+        $fileSize = filesize($filePath);
+        $mimeType = mime_content_type($filePath);
 
         $ch = curl_init();
 
@@ -90,31 +95,25 @@ class DownloadFileLink implements ShouldQueue
 
         if (($response = curl_exec($ch)) !== false) {
             if (curl_getinfo($ch, CURLINFO_HTTP_CODE) == 200) {
-
                 $sourceFileName = null;
                 $headerFilename = '/^Content-Disposition: .*?filename=(?<f>[^\s]+|\x22[^\x22]+\x22)\x3B?.*$/m';
 
                 if (preg_match($headerFilename, $response, $matches)) {
                     $sourceFileName = trim($matches['f'], ' ";');
-                    dd($sourceFileName);
                 }
 
                 if (!$sourceFileName) {
                     $sourceFileName = basename($this->url);
                 }
 
-                $metaDatas = stream_get_meta_data($tmpFile);
-                $fileSize = filesize($metaDatas['uri']);
-                $mimeType = mime_content_type($metaDatas['uri']);
-
-                DB::transaction(function () use ($sourceFileName, $hash, $fileSize, $mimeType) {
+                DB::transaction(function () use ($sourceFileName, $sha256, $fileSize, $mimeType) {
                     DownloadTask::find($this->task->id)->update([
                         'progress' => 100,
                         'ref_http_download_task_status_id' => 10,
                     ]);
 
                     $file = File::create([
-                        'sha256' => $hash,
+                        'sha256' => $sha256,
                         'size' => $fileSize,
                         'mime_type' => $mimeType
                     ]);
@@ -122,12 +121,20 @@ class DownloadFileLink implements ShouldQueue
                     BucketFile::create([
                         'file_id' => $file->id,
                         'bucket_id' => $this->busketId,
-                        'name' => $file->name,
+                        'name' => $sourceFileName,
+                        //todo uri
                     ]);
                 });
             }
         }
-
         curl_close($ch);
+
+        try {
+            $dir = storage_path('files/'.FileHelper::hashToPath($sha256));
+            mkdir($dir, 0755, true);
+            copy($filePath, $dir."/$sha256");
+        } catch (\Throwable $e){
+            dump($e->getMessage());
+        }
     }
 }

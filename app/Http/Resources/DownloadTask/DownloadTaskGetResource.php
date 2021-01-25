@@ -19,8 +19,8 @@ class DownloadTaskGetResource extends JsonResource
         return [
             'id' => $this->id,
             'url' => $this->url,
-            'progress' => $this->name,
-            'bucket_id' => $this->uri,
+            'progress' => $this->progress,
+//            'bucket' => $this->bucket_id,
             'status' => new DownloadTaskStatusResource($this->status),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

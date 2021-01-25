@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Helpers\FileHelper;
+use App\Http\Resources\ErrorResource;
 use App\Models\BucketFile;
 use App\Models\File;
 use App\Models\DownloadTask;
@@ -12,7 +13,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class DownloadFileLink implements ShouldQueue
 {
@@ -47,13 +47,13 @@ class DownloadFileLink implements ShouldQueue
      */
     function progress($resource, $download_size, $downloaded_size, $upload_size, $uploaded_size)
     {
+        $this->task->update(['comment' => "{$download_size}-{$downloaded_size}"]);
         static $previousProgress = 0;
 
         if ($download_size == 0) {
             $progress = 0;
         } else {
             $progress = round($downloaded_size / $download_size * 100, 2, PHP_ROUND_HALF_DOWN);
-
             if ((time() - $this->time) >= 1) {
                 $this->time = time();
 
@@ -107,34 +107,56 @@ class DownloadFileLink implements ShouldQueue
                 }
 
                 DB::transaction(function () use ($sourceFileName, $sha256, $fileSize, $mimeType) {
-                    DownloadTask::find($this->task->id)->update([
+                    info(22);
+                    $this->task->update([
                         'progress' => 100,
                         'ref_http_download_task_status_id' => 10,
                     ]);
 
-                    $file = File::create([
-                        'sha256' => $sha256,
-                        'size' => $fileSize,
-                        'mime_type' => $mimeType
+                    DownloadTask::find($this->task->id)->update([
+                        'progress' => 100,
+                        'ref_download_task_status_id' => 10,
                     ]);
 
-                    BucketFile::create([
-                        'file_id' => $file->id,
-                        'bucket_id' => $this->busketId,
-                        'name' => $sourceFileName,
-                        //todo uri
-                    ]);
+//                    $file = File::create([
+//                        'sha256' => $sha256,
+//                        'size' => $fileSize,
+//                        'mime_type' => $mimeType
+//                    ]);
+//
+//                    BucketFile::create([
+//                        'file_id' => $file->id,
+//                        'bucket_id' => $this->busketId,
+//                        'name' => $sourceFileName,
+//                        //todo uri
+//                    ]);
                 });
-            }
-        }
-        curl_close($ch);
 
-        try {
-            $dir = storage_path('files/'.FileHelper::hashToPath($sha256));
-            mkdir($dir, 0755, true);
-            copy($filePath, $dir."/$sha256");
-        } catch (\Throwable $e){
-            dump($e->getMessage());
+                try {
+//                    $dir = storage_path('files/'.FileHelper::hashToPath($sha256));
+//                    mkdir($dir, 0755, true);
+//                    copy($filePath, $dir."/$sha256");
+                } catch (\Throwable $e){
+//                    dump($e->getMessage());
+                }
+            } else {
+                info('statuscode1');
+                //@todo statuscode
+                $this->task->update([
+                    'ref_download_task_status_id' => 9,
+                ]);
+
+                info($this->task->ref_download_task_status_id);
+            }
+        } else {
+            info('statuscode2');
+
+            $this->task->update([
+                'ref_download_task_status_id' => 9,
+            ]);
+            info($this->task->ref_download_task_status_id);
         }
+
+        curl_close($ch);
     }
 }

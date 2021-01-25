@@ -12,10 +12,12 @@ use App\Models\BucketFile;
 use App\Models\DownloadTask;
 use App\Models\File;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Throwable;
 
 class FileController extends Controller
@@ -89,11 +91,40 @@ class FileController extends Controller
         }
     }
 
-    public function link(Request $request)
+    protected function generateBucketFileUri(): string
     {
-        $url = $request->get('url');
+        for ($i = 0; $i < 1000; $i++) {
+            $randomBytes = random_bytes(1024 * 1024);
+            $sha256 = hash('sha256', $randomBytes, true);
+            $uri = strtr(base64_encode($sha256), '+/=', '._-');
+
+            $model = BucketFile::where('uri', $uri)->first();
+
+            if (!$model) {
+                return $uri;
+            }
+        }
+
+        throw new Exception('Unique URI generation error');
+    }
+
+    public function link(Request $request): TypeDownloadTaskResource|JsonResponse|TypeBucketFileResource
+    {
+        $validator = Validator::make($request->all(), [
+            'url' => 'regex:/^https?:\/\//',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->messages(), 200);
+        }
+
+//        $url = $request->get('url');
+//        $bucketId = $request->get('bucket_id');
+        $url = 'https://speedtest.selectel.ru/100MB';
+        $bucketId = 1;
+
+
         $file = File::where('sha256', hash("sha256", $url))->first();
-        $bucketId = $request->get('bucket_id');
 
         if (!$file) {
             $model = DownloadTask::create([
@@ -119,25 +150,6 @@ class FileController extends Controller
 
         $model->load('file', 'bucket');
 
-//        dd(new TypeBucketFileResource($model));
-
         return new TypeBucketFileResource($model);
-    }
-
-    protected function generateBucketFileUri(): string
-    {
-        for ($i = 0; $i < 1000; $i++) {
-            $randomBytes = random_bytes(1024 * 1024);
-            $sha256 = hash('sha256', $randomBytes, true);
-            $uri = strtr(base64_encode($sha256), '+/=', '._-');
-
-            $model = BucketFile::where('uri', $uri)->first();
-
-            if (!$model) {
-                return $uri;
-            }
-        }
-
-        throw new Exception('Unique URI generation error');
     }
 }

@@ -21,6 +21,16 @@ class DownloadTaskStatusSeeder extends Seeder
                 'key' => 'new',
             ],
             [
+                'id' => 5,
+                'title' => 'Загрузка',
+                'key' => 'downloading',
+            ],
+            [
+                'id' => 9,
+                'title' => 'Ошибка',
+                'key' => 'error',
+            ],
+            [
                 'id' => 10,
                 'title' => 'Завершенная задача',
                 'key' => 'completed',

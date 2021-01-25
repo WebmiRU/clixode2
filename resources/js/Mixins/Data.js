@@ -13,7 +13,6 @@ export default {
             dataPostBackUrl: null, //URL для перехода после успешного POST'а
             dataUploadImageUrl: '/api/image',
             dataUploadFileUrl: '/api/file',
-            dataUploadFileUrlByUrl: '/api/file/link',
             dataUploadImageProgress: [],
         }
     },
@@ -48,6 +47,7 @@ export default {
 
             if (model) {
                 init.body = JSON.stringify(model);
+                console.log(init);
             }
 
             return await fetch(url, init).then(response => {
@@ -116,30 +116,8 @@ export default {
             xhr.send(formData);
         },
 
-        async uploadByUrl(data){
-            //запрос POST
-            let response = await this.request('POST', this.dataUploadFileUrlByUrl, data);
-
-            console.log(response);
-
-            switch(response.type) {
-                case 'download_task':
-
-                    break;
-                case 'bucket_file':
-                    let file = reactive({size: '-', mime_type:  '-'});
-                    let upload = reactive({id: '-', name: 'task№ ' + response.data.id, file: file});
-                    this.model.data.files.push(upload);
-                    break;
-                default:
-                    break;
-
-
-            }
-            //
-
-
-            //запрос статуса
+        t () {
+        console.log(44);
         },
 
         hookUploadImage(image) {
@@ -165,6 +143,7 @@ export default {
         if (this.$route.params.id === 'create') {
             this.loading = 0;
         } else if (this.dataGetUrl) {
+            console.log(this.dataGetUrl);
             let response = await this.request('GET', this.dataGetUrl);
 
             this.model.data = response.data;

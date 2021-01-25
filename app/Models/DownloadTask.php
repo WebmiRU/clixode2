@@ -22,6 +22,6 @@ class DownloadTask extends Model
 
     public function status(): HasOne
     {
-        return $this->hasOne(DownloadTaskStatus::class, 'id', 'file_id');
+        return $this->hasOne(DownloadTaskStatus::class, 'id', 'ref_download_task_status_id');
     }
 }

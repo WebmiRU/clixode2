@@ -19,11 +19,19 @@ class BucketController extends Controller
         return new IndexResource($model);
     }
 
-    public function get(int $id): JsonResource
+    public function get(int $id): IndexResource
     {
         $model = Bucket::query()
             ->with('files.file')
+            ->with(['files' => function ($q) {
+                $q->orderBy('id', 'DESC');
+            }])
             ->with('images')
+            ->with('tasks')
+            ->with(['tasks' => function ($q) {
+                $q->whereIn('ref_download_task_status_id', ['1', '5', '10']);
+                $q->orderBy('id', 'DESC');
+            }])
             ->find($id);
 
         return new IndexResource($model);

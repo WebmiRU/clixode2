@@ -47,7 +47,7 @@ export default {
 
             if (model) {
                 init.body = JSON.stringify(model);
-                console.log(init);
+                // console.log(init);
             }
 
             return await fetch(url, init).then(response => {

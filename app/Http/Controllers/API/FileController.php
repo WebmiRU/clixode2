@@ -108,8 +108,17 @@ class FileController extends Controller
         throw new Exception('Unique URI generation error');
     }
 
+
+    /**
+     * Сохранение файла по урлу
+     *
+     * @param Request $request
+     * @return TypeDownloadTaskResource|JsonResponse|TypeBucketFileResource
+     * @throws Exception
+     */
     public function link(Request $request): TypeDownloadTaskResource|JsonResponse|TypeBucketFileResource
     {
+        //Проверка ссылки
         $validator = Validator::make($request->all(), [
             'url' => 'regex:/^https?:\/\//',
         ]);
@@ -118,10 +127,12 @@ class FileController extends Controller
             return response()->json($validator->messages(), 200);
         }
 
-//        $url = $request->get('url');
-//        $bucketId = $request->get('bucket_id');
-        $url = 'https://speedtest.selectel.ru/100MB';
-        $bucketId = 1;
+
+        //@todo убрать
+        $url = $request->get('url');
+        $bucketId = $request->get('bucket_id');
+//        $url = 'https://speedtest.selectel.ru/100MB';
+//        $bucketId = 1;
 
 
         $file = File::where('sha256', hash("sha256", $url))->first();

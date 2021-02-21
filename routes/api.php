@@ -44,7 +44,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     //DownloadTask
     Route::group(['prefix' => 'download-task', 'as' => 'download-task.'], function () {
-        Route::get('bucket/{id}', [DownloadTaskController::class, 'index'])->name('index');
+        Route::post('check-status', [DownloadTaskController::class, 'checkStatus'])->name('check-status');
     });
 
     //Images

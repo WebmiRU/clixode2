@@ -27,11 +27,6 @@ class BucketController extends Controller
                 $q->orderBy('id', 'DESC');
             }])
             ->with('images')
-            ->with('tasks')
-            ->with(['tasks' => function ($q) {
-                $q->whereIn('ref_download_task_status_id', ['1', '5', '10']);
-                $q->orderBy('id', 'DESC');
-            }])
             ->find($id);
 
         return new IndexResource($model);

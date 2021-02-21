@@ -22,6 +22,8 @@ class DownloadFileLink implements ShouldQueue
     protected $time;
     protected $task;
     protected $busketId;
+    protected $previousProgress = 0;
+
 
     /**
      * Create a new job instance.
@@ -47,9 +49,6 @@ class DownloadFileLink implements ShouldQueue
      */
     function progress($resource, $download_size, $downloaded_size, $upload_size, $uploaded_size)
     {
-        $this->task->update(['comment' => "{$download_size}-{$downloaded_size}"]);
-        static $previousProgress = 0;
-
         if ($download_size == 0) {
             $progress = 0;
         } else {
@@ -57,8 +56,8 @@ class DownloadFileLink implements ShouldQueue
             if ((time() - $this->time) >= 1) {
                 $this->time = time();
 
-                if ($progress > $previousProgress) {
-                    $previousProgress = $progress;
+                if ($progress > $this->previousProgress) {
+                    $this->previousProgress = $progress;
 
                     if ($this->task) {
                         $this->task->update(['progress' => $progress]);
@@ -107,7 +106,6 @@ class DownloadFileLink implements ShouldQueue
                 }
 
                 DB::transaction(function () use ($sourceFileName, $sha256, $fileSize, $mimeType) {
-                    info(22);
                     $this->task->update([
                         'progress' => 100,
                         'ref_http_download_task_status_id' => 10,
@@ -118,26 +116,26 @@ class DownloadFileLink implements ShouldQueue
                         'ref_download_task_status_id' => 10,
                     ]);
 
-//                    $file = File::create([
-//                        'sha256' => $sha256,
-//                        'size' => $fileSize,
-//                        'mime_type' => $mimeType
-//                    ]);
-//
-//                    BucketFile::create([
-//                        'file_id' => $file->id,
-//                        'bucket_id' => $this->busketId,
-//                        'name' => $sourceFileName,
-//                        //todo uri
-//                    ]);
+                    $file = File::create([
+                        'sha256' => $sha256,
+                        'size' => $fileSize,
+                        'mime_type' => $mimeType
+                    ]);
+
+                    BucketFile::create([
+                        'file_id' => $file->id,
+                        'bucket_id' => $this->busketId,
+                        'name' => $sourceFileName,
+                        //todo uri
+                    ]);
                 });
 
                 try {
-//                    $dir = storage_path('files/'.FileHelper::hashToPath($sha256));
-//                    mkdir($dir, 0755, true);
-//                    copy($filePath, $dir."/$sha256");
+                    $dir = storage_path('files/'.FileHelper::hashToPath($sha256));
+                    mkdir($dir, 0755, true);
+                    copy($filePath, $dir."/$sha256");
                 } catch (\Throwable $e){
-//                    dump($e->getMessage());
+                    dump($e->getMessage());
                 }
             } else {
                 info('statuscode1');

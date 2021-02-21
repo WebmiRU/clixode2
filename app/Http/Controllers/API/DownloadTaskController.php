@@ -6,17 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\DownloadTask\DownloadTaskGetResource;
 use App\Models\DownloadTask;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class DownloadTaskController extends Controller
 {
 
-    public function index(int $bucketId): AnonymousResourceCollection
+    public function checkStatus(Request $request)
     {
-//        $bucketId = $request->get('bucket_id');
+        $idArr = collect($request->all())->pluck('id');
+
         $model = DownloadTask::query()
             ->with('status')
-            ->where('bucket_id', $bucketId)
+            ->whereIn('id', $idArr)
             ->whereIn('ref_download_task_status_id', ['1', '5', '10'])
             ->orderBy('id', 'DESC')
             ->get();

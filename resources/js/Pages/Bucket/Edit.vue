@@ -103,31 +103,32 @@ export default {
     mixins: [GetData],
     data() {
         return {
-            dataGetUrl: '/api/bucket/' + this.$route.params.id,
+            dataGetBucketUrl: '/api/bucket/' + this.$route.params.id,
+            dataGetUrl: null,
             model: {data: {files: [], images: [], tasks: []}},
             dataUploadFileUrlByLink: '/api/file/link',
-            CheckTaskStatusUrl: '/api/download-task/bucket',
+            CheckTaskStatusUrl: '/api/download-task/check-status',
         };
     },
     methods: {
+        //Upload file direct
         uploadFile() {
             let file = this.$refs.upload_file.files[0];
 
             this.upload(file, 'file', this.model.data.files, {bucket_id: this.$route.params.id});
         },
+        //Upload file by url
         uploadFileByUrl() {
             let url = this.$refs.upload_url.value;
-            this.uploadByUrl({bucket_id: this.$route.params.id, url: url});
+            this.processUploadByUrl({bucket_id: this.$route.params.id, url: url});
         },
-        async uploadByUrl(data) {
+        //Process uploading file by url
+        async processUploadByUrl(data) {
             let response = await this.request('POST', this.dataUploadFileUrlByLink, data);
 
             switch (response.type) {
                 case 'download_task':
-                    console.log(444, this.model.data.tasks);
                     this.model.data.tasks.push(response.data);
-                    console.log('uploadByUrl');
-                    console.log('dowmload_task');
                     await this.checkStatus();
                     break;
                 case 'bucket_file':
@@ -137,46 +138,46 @@ export default {
                     break;
             }
         },
+
+
         async checkStatus() {
-            // let response = await this.request('GET', this.CheckTaskStatusUrl, {bucket_id: this.$route.params.id}).then(response => {
-            let response = await this.request('GET', `${this.CheckTaskStatusUrl}/${this.$route.params.id}`).then(response => {
+            let currentTasks = this.model.data.tasks;
 
-                let currentTasks = this.model.data.tasks;
-
+            let response = await this.request('POST', this.CheckTaskStatusUrl, currentTasks).then(response => {
                 this.model.data.tasks = response.data;
-
-
-                // arr.forEach(function callback(currentValue, index, array) {
-                //     //your iterator
-                // }[, thisArg]);
-
                 this.model.data.tasks.forEach(updatedTask => {
                     currentTasks.forEach(async currentTask => {
-                        if(updatedTask.id == currentTask.id){
-                            if(updatedTask.status.id != currentTask.status.id && updatedTask.status.key == 'completed'){
-                                console.log(updatedTask.status.id, currentTask.status.id);
-                                // console.log(13, this.model.data.files);
-
-                                let response = await this.request('GET', this.dataGetUrl)
+                        if (updatedTask.id == currentTask.id) {
+                            if (updatedTask.status.id != currentTask.status.id && updatedTask.status.key == 'completed') {
+                                let response = await this.request('GET', this.dataGetBucketUrl)
                                     .then(response => {
-                                        this.model.data.files = response.data;
+                                        this.model.data.files = response.data.files;
+
+                                        //delete completed task by property id
+                                        let index = this.model.data.tasks.map(v => {
+                                            return v.id;
+                                        }).indexOf(currentTask.id);
+
+                                        this.model.data.tasks.splice(index, 1);
                                     });
                             }
                         }
                     });
                 });
 
-                console.log(12, this.model.data.tasks);
-                if (this.model.data.tasks.length) {
-                    setTimeout(() => {
-                        this.checkStatus()
-                    }, 1000);
-                }
             });
         }
     },
     async mounted() {
-        this.checkStatus();
+        let response = await this.request('GET', this.dataGetBucketUrl).then(response => {
+            this.model.data.files = response.data.files;
+        });
+
+        setInterval(() => {
+            if (this.model.data.tasks.length) {
+                this.checkStatus()
+            }
+        }, 1000);
     }
 }
 </script>

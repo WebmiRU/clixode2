@@ -63,7 +63,7 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            'throttle:api',
+            'throttle:100,1',
             SubstituteBindings::class,
         ],
     ];

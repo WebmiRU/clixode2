@@ -1353,7 +1353,7 @@ function startsWithEndTagOpen(source, tag) {
 }
 
 function hoistStatic(root, context) {
-    walk(root, context, new Map(), 
+    walk(root, context, 
     // Root node is unfortunately non-hoistable due to potential parent
     // fallthrough attributes.
     isSingleElementRoot(root, root.children[0]));
@@ -1364,7 +1364,7 @@ function isSingleElementRoot(root, child) {
         child.type === 1 /* ELEMENT */ &&
         !isSlotOutlet(child));
 }
-function walk(node, context, resultCache, doNotHoistNode = false) {
+function walk(node, context, doNotHoistNode = false) {
     let hasHoistedNode = false;
     // Some transforms, e.g. transformAssetUrls from @vue/compiler-sfc, replaces
     // static bindings with expressions. These expressions are guaranteed to be
@@ -1383,7 +1383,7 @@ function walk(node, context, resultCache, doNotHoistNode = false) {
             child.tagType === 0 /* ELEMENT */) {
             const constantType = doNotHoistNode
                 ? 0 /* NOT_CONSTANT */
-                : getConstantType(child, resultCache);
+                : getConstantType(child, context);
             if (constantType > 0 /* NOT_CONSTANT */) {
                 if (constantType < 3 /* CAN_STRINGIFY */) {
                     canStringify = false;
@@ -1405,7 +1405,7 @@ function walk(node, context, resultCache, doNotHoistNode = false) {
                     if ((!flag ||
                         flag === 512 /* NEED_PATCH */ ||
                         flag === 1 /* TEXT */) &&
-                        getGeneratedPropsConstantType(child, resultCache) >=
+                        getGeneratedPropsConstantType(child, context) >=
                             2 /* CAN_HOIST */) {
                         const props = getNodeProps(child);
                         if (props) {
@@ -1416,7 +1416,7 @@ function walk(node, context, resultCache, doNotHoistNode = false) {
             }
         }
         else if (child.type === 12 /* TEXT_CALL */) {
-            const contentType = getConstantType(child.content, resultCache);
+            const contentType = getConstantType(child.content, context);
             if (contentType > 0) {
                 if (contentType < 3 /* CAN_STRINGIFY */) {
                     canStringify = false;
@@ -1429,16 +1429,16 @@ function walk(node, context, resultCache, doNotHoistNode = false) {
         }
         // walk further
         if (child.type === 1 /* ELEMENT */) {
-            walk(child, context, resultCache);
+            walk(child, context);
         }
         else if (child.type === 11 /* FOR */) {
             // Do not hoist v-for single child because it has to be a block
-            walk(child, context, resultCache, child.children.length === 1);
+            walk(child, context, child.children.length === 1);
         }
         else if (child.type === 9 /* IF */) {
             for (let i = 0; i < child.branches.length; i++) {
                 // Do not hoist v-if single child because it has to be a block
-                walk(child.branches[i], context, resultCache, child.branches[i].children.length === 1);
+                walk(child.branches[i], context, child.branches[i].children.length === 1);
             }
         }
     }
@@ -1446,13 +1446,14 @@ function walk(node, context, resultCache, doNotHoistNode = false) {
         context.transformHoist(children, context, node);
     }
 }
-function getConstantType(node, resultCache = new Map()) {
+function getConstantType(node, context) {
+    const { constantCache } = context;
     switch (node.type) {
         case 1 /* ELEMENT */:
             if (node.tagType !== 0 /* ELEMENT */) {
                 return 0 /* NOT_CONSTANT */;
             }
-            const cached = resultCache.get(node);
+            const cached = constantCache.get(node);
             if (cached !== undefined) {
                 return cached;
             }
@@ -1468,9 +1469,9 @@ function getConstantType(node, resultCache = new Map()) {
                 // non-hoistable expressions that refers to scope variables, e.g. compiler
                 // injected keys or cached event handlers. Therefore we need to always
                 // check the codegenNode's props to be sure.
-                const generatedPropsType = getGeneratedPropsConstantType(node, resultCache);
+                const generatedPropsType = getGeneratedPropsConstantType(node, context);
                 if (generatedPropsType === 0 /* NOT_CONSTANT */) {
-                    resultCache.set(node, 0 /* NOT_CONSTANT */);
+                    constantCache.set(node, 0 /* NOT_CONSTANT */);
                     return 0 /* NOT_CONSTANT */;
                 }
                 if (generatedPropsType < returnType) {
@@ -1478,9 +1479,9 @@ function getConstantType(node, resultCache = new Map()) {
                 }
                 // 2. its children.
                 for (let i = 0; i < node.children.length; i++) {
-                    const childType = getConstantType(node.children[i], resultCache);
+                    const childType = getConstantType(node.children[i], context);
                     if (childType === 0 /* NOT_CONSTANT */) {
-                        resultCache.set(node, 0 /* NOT_CONSTANT */);
+                        constantCache.set(node, 0 /* NOT_CONSTANT */);
                         return 0 /* NOT_CONSTANT */;
                     }
                     if (childType < returnType) {
@@ -1495,9 +1496,9 @@ function getConstantType(node, resultCache = new Map()) {
                     for (let i = 0; i < node.props.length; i++) {
                         const p = node.props[i];
                         if (p.type === 7 /* DIRECTIVE */ && p.name === 'bind' && p.exp) {
-                            const expType = getConstantType(p.exp, resultCache);
+                            const expType = getConstantType(p.exp, context);
                             if (expType === 0 /* NOT_CONSTANT */) {
-                                resultCache.set(node, 0 /* NOT_CONSTANT */);
+                                constantCache.set(node, 0 /* NOT_CONSTANT */);
                                 return 0 /* NOT_CONSTANT */;
                             }
                             if (expType < returnType) {
@@ -1511,12 +1512,13 @@ function getConstantType(node, resultCache = new Map()) {
                 // nested updates.
                 if (codegenNode.isBlock) {
                     codegenNode.isBlock = false;
+                    context.helper(CREATE_VNODE);
                 }
-                resultCache.set(node, returnType);
+                constantCache.set(node, returnType);
                 return returnType;
             }
             else {
-                resultCache.set(node, 0 /* NOT_CONSTANT */);
+                constantCache.set(node, 0 /* NOT_CONSTANT */);
                 return 0 /* NOT_CONSTANT */;
             }
         case 2 /* TEXT */:
@@ -1528,7 +1530,7 @@ function getConstantType(node, resultCache = new Map()) {
             return 0 /* NOT_CONSTANT */;
         case 5 /* INTERPOLATION */:
         case 12 /* TEXT_CALL */:
-            return getConstantType(node.content, resultCache);
+            return getConstantType(node.content, context);
         case 4 /* SIMPLE_EXPRESSION */:
             return node.constType;
         case 8 /* COMPOUND_EXPRESSION */:
@@ -1538,7 +1540,7 @@ function getConstantType(node, resultCache = new Map()) {
                 if ((0,_vue_shared__WEBPACK_IMPORTED_MODULE_0__.isString)(child) || (0,_vue_shared__WEBPACK_IMPORTED_MODULE_0__.isSymbol)(child)) {
                     continue;
                 }
-                const childType = getConstantType(child, resultCache);
+                const childType = getConstantType(child, context);
                 if (childType === 0 /* NOT_CONSTANT */) {
                     return 0 /* NOT_CONSTANT */;
                 }
@@ -1552,14 +1554,14 @@ function getConstantType(node, resultCache = new Map()) {
             return 0 /* NOT_CONSTANT */;
     }
 }
-function getGeneratedPropsConstantType(node, resultCache) {
+function getGeneratedPropsConstantType(node, context) {
     let returnType = 3 /* CAN_STRINGIFY */;
     const props = getNodeProps(node);
     if (props && props.type === 15 /* JS_OBJECT_EXPRESSION */) {
         const { properties } = props;
         for (let i = 0; i < properties.length; i++) {
             const { key, value } = properties[i];
-            const keyType = getConstantType(key, resultCache);
+            const keyType = getConstantType(key, context);
             if (keyType === 0 /* NOT_CONSTANT */) {
                 return keyType;
             }
@@ -1569,7 +1571,7 @@ function getGeneratedPropsConstantType(node, resultCache) {
             if (value.type !== 4 /* SIMPLE_EXPRESSION */) {
                 return 0 /* NOT_CONSTANT */;
             }
-            const valueType = getConstantType(value, resultCache);
+            const valueType = getConstantType(value, context);
             if (valueType === 0 /* NOT_CONSTANT */) {
                 return valueType;
             }
@@ -1619,6 +1621,7 @@ function createTransformContext(root, { filename = '', prefixIdentifiers = false
         directives: new Set(),
         hoists: [],
         imports: new Set(),
+        constantCache: new Map(),
         temps: 0,
         cached: 0,
         identifiers: Object.create(null),
@@ -2759,6 +2762,9 @@ const transformFor = createStructuralDirectiveTransform('for', (node, dir, conte
                     helper(OPEN_BLOCK);
                     helper(CREATE_BLOCK);
                 }
+                else {
+                    helper(CREATE_VNODE);
+                }
             }
             renderExp.arguments.push(createFunctionExpression(createForLoopParams(forNode.parseResult), childBlock, true /* force newline */));
         };
@@ -3199,7 +3205,7 @@ const transformElement = (node, context) => {
                 const hasDynamicTextChild = type === 5 /* INTERPOLATION */ ||
                     type === 8 /* COMPOUND_EXPRESSION */;
                 if (hasDynamicTextChild &&
-                    getConstantType(child) === 0 /* NOT_CONSTANT */) {
+                    getConstantType(child, context) === 0 /* NOT_CONSTANT */) {
                     patchFlag |= 1 /* TEXT */;
                 }
                 // pass directly if the only child is a text node
@@ -3304,7 +3310,7 @@ function buildProps(node, context, props = node.props, ssr = false) {
             if (value.type === 20 /* JS_CACHE_EXPRESSION */ ||
                 ((value.type === 4 /* SIMPLE_EXPRESSION */ ||
                     value.type === 8 /* COMPOUND_EXPRESSION */) &&
-                    getConstantType(value) > 0)) {
+                    getConstantType(value, context) > 0)) {
                 // skip if the prop is a cached handler or has constant value
                 return;
             }
@@ -3799,7 +3805,7 @@ const transformText = (node, context) => {
                     }
                     // mark dynamic text with flag so it gets patched inside a block
                     if (!context.ssr &&
-                        getConstantType(child) === 0 /* NOT_CONSTANT */) {
+                        getConstantType(child, context) === 0 /* NOT_CONSTANT */) {
                         callArgs.push(1 /* TEXT */ +
                             (( true) ? ` /* ${_vue_shared__WEBPACK_IMPORTED_MODULE_0__.PatchFlagNames[1]} */` : 0));
                     }
@@ -6084,7 +6090,7 @@ function createDevtoolsComponentHook(hook) {
     return (component) => {
         if (!devtools)
             return;
-        devtools.emit(hook, component.appContext.app, component.uid, component.parent ? component.parent.uid : undefined);
+        devtools.emit(hook, component.appContext.app, component.uid, component.parent ? component.parent.uid : undefined, component);
     };
 }
 function devtoolsComponentEmit(component, event, params) {
@@ -8057,7 +8063,7 @@ const KeepAliveImpl = {
         }
         function pruneCache(filter) {
             cache.forEach((vnode, key) => {
-                const name = getName(vnode.type);
+                const name = getComponentName(vnode.type);
                 if (name && (!filter || !filter(name))) {
                     pruneCacheEntry(key);
                 }
@@ -8130,7 +8136,7 @@ const KeepAliveImpl = {
             }
             let vnode = getInnerChild(rawVNode);
             const comp = vnode.type;
-            const name = getName(comp);
+            const name = getComponentName(comp);
             const { include, exclude, max } = props;
             if ((include && (!name || !matches(include, name))) ||
                 (exclude && name && matches(exclude, name))) {
@@ -8183,9 +8189,6 @@ const KeepAliveImpl = {
 // export the public type for h/tsx inference
 // also to avoid inline import() in generated d.ts files
 const KeepAlive = KeepAliveImpl;
-function getName(comp) {
-    return comp.displayName || comp.name;
-}
 function matches(pattern, name) {
     if ((0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.isArray)(pattern)) {
         return pattern.some((p) => matches(p, name));
@@ -9585,7 +9588,10 @@ function baseCreateRenderer(options, createHydrationFns) {
         else {
             if (patchFlag > 0 &&
                 patchFlag & 64 /* STABLE_FRAGMENT */ &&
-                dynamicChildren) {
+                dynamicChildren &&
+                // #2715 the previous fragment could've been a BAILed one as a result
+                // of renderSlot() with no valid children
+                n1.dynamicChildren) {
                 // a stable fragment (template root or <template v-for>) doesn't need to
                 // patch children order, but it may contain dynamicChildren.
                 patchBlockChildren(n1.dynamicChildren, dynamicChildren, container, parentComponent, parentSuspense, isSVG);
@@ -9746,8 +9752,9 @@ function baseCreateRenderer(options, createHydrationFns) {
                 }
                 // onVnodeMounted
                 if ((vnodeHook = props && props.onVnodeMounted)) {
+                    const scopedInitialVNode = initialVNode;
                     queuePostRenderEffect(() => {
-                        invokeVNodeHook(vnodeHook, parent, initialVNode);
+                        invokeVNodeHook(vnodeHook, parent, scopedInitialVNode);
                     }, parentSuspense);
                 }
                 // activated hook for keep-alive roots.
@@ -9759,6 +9766,8 @@ function baseCreateRenderer(options, createHydrationFns) {
                     queuePostRenderEffect(a, parentSuspense);
                 }
                 instance.isMounted = true;
+                // #2458: deference mount-only object parameters to prevent memleaks
+                initialVNode = container = anchor = null;
             }
             else {
                 // updateComponent
@@ -10647,7 +10656,7 @@ function resolveAsset(type, name, warnMissing = true) {
             if (name === `_self`) {
                 return Component;
             }
-            const selfName = Component.displayName || Component.name;
+            const selfName = getComponentName(Component);
             if (selfName &&
                 (selfName === name ||
                     selfName === (0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.camelize)(name) ||
@@ -11256,6 +11265,7 @@ function applyOptions(instance, options, deferredData = [], deferredWatch = [], 
             deferredData.forEach(dataFn => resolveData(instance, dataFn, publicThis));
         }
         if (dataOptions) {
+            // @ts-ignore dataOptions is not fully type safe
             resolveData(instance, dataOptions, publicThis);
         }
         if ((true)) {
@@ -12095,11 +12105,14 @@ function recordInstanceBoundEffect(effect, instance = currentInstance) {
 }
 const classifyRE = /(?:^|[-_])(\w)/g;
 const classify = (str) => str.replace(classifyRE, c => c.toUpperCase()).replace(/[-_]/g, '');
-/* istanbul ignore next */
-function formatComponentName(instance, Component, isRoot = false) {
-    let name = (0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.isFunction)(Component)
+function getComponentName(Component) {
+    return (0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.isFunction)(Component)
         ? Component.displayName || Component.name
         : Component.name;
+}
+/* istanbul ignore next */
+function formatComponentName(instance, Component, isRoot = false) {
+    let name = getComponentName(Component);
     if (!name && Component.__file) {
         const match = Component.__file.match(/([^/\\]+)\.\w+$/);
         if (match) {
@@ -12464,7 +12477,7 @@ function createSlots(slots, dynamicSlots) {
 }
 
 // Core API ------------------------------------------------------------------
-const version = "3.0.4";
+const version = "3.0.5";
 /**
  * SSR utils for \@vue/server-renderer. Only exposed in cjs builds.
  * @internal
@@ -13128,29 +13141,23 @@ function resolveTransitionProps(rawProps) {
     return (0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.extend)(baseProps, {
         onBeforeEnter(el) {
             onBeforeEnter && onBeforeEnter(el);
-            addTransitionClass(el, enterActiveClass);
             addTransitionClass(el, enterFromClass);
+            addTransitionClass(el, enterActiveClass);
         },
         onBeforeAppear(el) {
             onBeforeAppear && onBeforeAppear(el);
-            addTransitionClass(el, appearActiveClass);
             addTransitionClass(el, appearFromClass);
+            addTransitionClass(el, appearActiveClass);
         },
         onEnter: makeEnterHook(false),
         onAppear: makeEnterHook(true),
         onLeave(el, done) {
             const resolve = () => finishLeave(el, done);
-            addTransitionClass(el, leaveActiveClass);
             addTransitionClass(el, leaveFromClass);
-            // ref #2531, #2593
-            // disabling the transition before nextFrame ensures styles from
-            // *-leave-from and *-enter-from classes are applied instantly before
-            // the transition starts. This is applied for enter transition as well
-            // so that it accounts for `visibility: hidden` cases.
-            const cachedTransition = el.style.transitionProperty;
-            el.style.transitionProperty = 'none';
+            // force reflow so *-leave-from classes immediately take effect (#2593)
+            forceReflow();
+            addTransitionClass(el, leaveActiveClass);
             nextFrame(() => {
-                el.style.transitionProperty = cachedTransition;
                 removeTransitionClass(el, leaveFromClass);
                 addTransitionClass(el, leaveToClass);
                 if (!(onLeave && onLeave.length > 1)) {
@@ -13318,6 +13325,10 @@ function getTimeout(delays, durations) {
 function toMs(s) {
     return Number(s.slice(0, -1).replace(',', '.')) * 1000;
 }
+// synchronously force layout to put elements into a certain state
+function forceReflow() {
+    return document.body.offsetHeight;
+}
 
 const positionMap = new WeakMap();
 const newPositionMap = new WeakMap();
@@ -13416,10 +13427,6 @@ function applyTranslation(c) {
         s.transitionDuration = '0s';
         return c;
     }
-}
-// this is put in a dedicated function to avoid the line from being treeshaken
-function forceReflow() {
-    return document.body.offsetHeight;
 }
 function hasCSSTransform(el, root, moveClass) {
     // Detect whether an element with the move class applied has
@@ -13827,8 +13834,10 @@ const createApp = ((...args) => {
         // clear content before mounting
         container.innerHTML = '';
         const proxy = mount(container);
-        container.removeAttribute('v-cloak');
-        container.setAttribute('data-v-app', '');
+        if (container instanceof Element) {
+            container.removeAttribute('v-cloak');
+            container.setAttribute('data-v-app', '');
+        }
         return proxy;
     };
     return app;
@@ -13859,9 +13868,14 @@ function normalizeContainer(container) {
     if ((0,_vue_shared__WEBPACK_IMPORTED_MODULE_1__.isString)(container)) {
         const res = document.querySelector(container);
         if (( true) && !res) {
-            (0,_vue_runtime_core__WEBPACK_IMPORTED_MODULE_0__.warn)(`Failed to mount app: mount target selector returned null.`);
+            (0,_vue_runtime_core__WEBPACK_IMPORTED_MODULE_0__.warn)(`Failed to mount app: mount target selector "${container}" returned null.`);
         }
         return res;
+    }
+    if (( true) &&
+        container instanceof ShadowRoot &&
+        container.mode === 'closed') {
+        (0,_vue_runtime_core__WEBPACK_IMPORTED_MODULE_0__.warn)(`mounting on a ShadowRoot with \`{mode: "closed"}\` may lead to unpredictable bugs`);
     }
     return container;
 }
@@ -14463,7 +14477,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   mixins: [_Mixins_Data__WEBPACK_IMPORTED_MODULE_1__.default],
   data: function data() {
     return {
-      dataGetUrl: '/api/bucket/' + this.$route.params.id,
+      dataGetBucketUrl: '/api/bucket/' + this.$route.params.id,
+      dataGetUrl: null,
       model: {
         data: {
           files: [],
@@ -14472,24 +14487,27 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }
       },
       dataUploadFileUrlByLink: '/api/file/link',
-      CheckTaskStatusUrl: '/api/download-task/bucket'
+      CheckTaskStatusUrl: '/api/download-task/check-status'
     };
   },
   methods: {
+    //Upload file direct
     uploadFile: function uploadFile() {
       var file = this.$refs.upload_file.files[0];
       this.upload(file, 'file', this.model.data.files, {
         bucket_id: this.$route.params.id
       });
     },
+    //Upload file by url
     uploadFileByUrl: function uploadFileByUrl() {
       var url = this.$refs.upload_url.value;
-      this.uploadByUrl({
+      this.processUploadByUrl({
         bucket_id: this.$route.params.id,
         url: url
       });
     },
-    uploadByUrl: function uploadByUrl(data) {
+    //Process uploading file by url
+    processUploadByUrl: function processUploadByUrl(data) {
       var _this = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
@@ -14504,31 +14522,27 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 2:
                 response = _context.sent;
                 _context.t0 = response.type;
-                _context.next = _context.t0 === 'download_task' ? 6 : _context.t0 === 'bucket_file' ? 13 : 15;
+                _context.next = _context.t0 === 'download_task' ? 6 : _context.t0 === 'bucket_file' ? 10 : 12;
                 break;
 
               case 6:
-                console.log(444, _this.model.data.tasks);
-
                 _this.model.data.tasks.push(response.data);
 
-                console.log('uploadByUrl');
-                console.log('dowmload_task');
-                _context.next = 12;
+                _context.next = 9;
                 return _this.checkStatus();
 
-              case 12:
-                return _context.abrupt("break", 16);
+              case 9:
+                return _context.abrupt("break", 13);
 
-              case 13:
+              case 10:
                 _this.model.data.files.push(response.data);
 
-                return _context.abrupt("break", 16);
+                return _context.abrupt("break", 13);
 
-              case 15:
-                return _context.abrupt("break", 16);
+              case 12:
+                return _context.abrupt("break", 13);
 
-              case 16:
+              case 13:
               case "end":
                 return _context.stop();
             }
@@ -14540,17 +14554,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this2 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3() {
-        var response;
+        var currentTasks, response;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                _context3.next = 2;
-                return _this2.request('GET', "".concat(_this2.CheckTaskStatusUrl, "/").concat(_this2.$route.params.id)).then(function (response) {
-                  var currentTasks = _this2.model.data.tasks;
-                  _this2.model.data.tasks = response.data; // arr.forEach(function callback(currentValue, index, array) {
-                  //     //your iterator
-                  // }[, thisArg]);
+                currentTasks = _this2.model.data.tasks;
+                _context3.next = 3;
+                return _this2.request('POST', _this2.CheckTaskStatusUrl, currentTasks).then(function (response) {
+                  _this2.model.data.tasks = response.data;
 
                   _this2.model.data.tasks.forEach(function (updatedTask) {
                     currentTasks.forEach( /*#__PURE__*/function () {
@@ -14562,26 +14574,30 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                             switch (_context2.prev = _context2.next) {
                               case 0:
                                 if (!(updatedTask.id == currentTask.id)) {
-                                  _context2.next = 6;
+                                  _context2.next = 5;
                                   break;
                                 }
 
                                 if (!(updatedTask.status.id != currentTask.status.id && updatedTask.status.key == 'completed')) {
-                                  _context2.next = 6;
+                                  _context2.next = 5;
                                   break;
                                 }
 
-                                console.log(updatedTask.status.id, currentTask.status.id); // console.log(13, this.model.data.files);
+                                _context2.next = 4;
+                                return _this2.request('GET', _this2.dataGetBucketUrl).then(function (response) {
+                                  _this2.model.data.files = response.data.files; //delete completed task by property id
 
-                                _context2.next = 5;
-                                return _this2.request('GET', _this2.dataGetUrl).then(function (response) {
-                                  _this2.model.data.files = response.data;
+                                  var index = _this2.model.data.tasks.map(function (v) {
+                                    return v.id;
+                                  }).indexOf(currentTask.id);
+
+                                  _this2.model.data.tasks.splice(index, 1);
                                 });
 
-                              case 5:
+                              case 4:
                                 _response = _context2.sent;
 
-                              case 6:
+                              case 5:
                               case "end":
                                 return _context2.stop();
                             }
@@ -14594,20 +14610,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                       };
                     }());
                   });
-
-                  console.log(12, _this2.model.data.tasks);
-
-                  if (_this2.model.data.tasks.length) {
-                    setTimeout(function () {
-                      _this2.checkStatus();
-                    }, 1000);
-                  }
                 });
 
-              case 2:
+              case 3:
                 response = _context3.sent;
 
-              case 3:
+              case 4:
               case "end":
                 return _context3.stop();
             }
@@ -14620,13 +14628,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     var _this3 = this;
 
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4() {
+      var response;
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee4$(_context4) {
         while (1) {
           switch (_context4.prev = _context4.next) {
             case 0:
-              _this3.checkStatus();
+              _context4.next = 2;
+              return _this3.request('GET', _this3.dataGetBucketUrl).then(function (response) {
+                _this3.model.data.files = response.data.files;
+              });
 
-            case 1:
+            case 2:
+              response = _context4.sent;
+              setInterval(function () {
+                if (_this3.model.data.tasks.length) {
+                  _this3.checkStatus();
+                }
+              }, 1000);
+
+            case 4:
             case "end":
               return _context4.stop();
           }
@@ -15697,8 +15717,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 };
 
                 if (model) {
-                  init.body = JSON.stringify(model);
-                  console.log(init);
+                  init.body = JSON.stringify(model); // console.log(init);
                 }
 
                 _context.next = 6;
@@ -20861,6 +20880,6 @@ function compileToFunction(template, options) {
 /******/ 	
 /************************************************************************/
 /******/ 	// run startup
-/******/ 	return __webpack_require__.x();
+/******/ 	__webpack_require__.x();
 /******/ })()
 ;

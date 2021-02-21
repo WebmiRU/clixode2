@@ -17,6 +17,7 @@ class DownloadTask extends Model
         'url',
         'ref_download_task_status_id',
         'progress',
+        'comment',
         'bucket_id',
     ];
 

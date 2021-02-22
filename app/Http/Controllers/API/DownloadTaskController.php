@@ -6,11 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\DownloadTask\DownloadTaskGetResource;
 use App\Models\DownloadTask;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class DownloadTaskController extends Controller
 {
-
-    public function checkStatus(Request $request)
+    public function checkStatus(Request $request): AnonymousResourceCollection
     {
         $idArr = collect($request->all())->pluck('id');
 

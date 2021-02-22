@@ -47,7 +47,6 @@ export default {
 
             if (model) {
                 init.body = JSON.stringify(model);
-                // console.log(init);
             }
 
             return await fetch(url, init).then(response => {
@@ -96,8 +95,6 @@ export default {
                 if (xhr.readyState == 4) {
                     if (xhr.status == 200 || xhr.status == 201) {
                         //Картинка успешно загружена
-                        console.log(991);
-                        console.log(xhr.responseText);
                         let response = JSON.parse(xhr.responseText).data;
 
                         response.isNew = true;
@@ -115,21 +112,6 @@ export default {
             formData.append(type, file);
             xhr.send(formData);
         },
-
-        t () {
-        console.log(44);
-        },
-
-        hookUploadImage(image) {
-        },
-        dataHookGetCompleted() {
-        },
-        dataHookPostCompleted() {
-        },
-        dataHookPutCompleted() {
-        },
-        dataHookDeleteCompleted() {
-        },
     },
     async mounted() {
         //Data URL's
@@ -143,7 +125,6 @@ export default {
         if (this.$route.params.id === 'create') {
             this.loading = 0;
         } else if (this.dataGetUrl) {
-            console.log(this.dataGetUrl);
             let response = await this.request('GET', this.dataGetUrl);
 
             this.model.data = response.data;

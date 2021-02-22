@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateFileTable extends Migration
@@ -18,9 +19,10 @@ class CreateFileTable extends Migration
             $table->string('sha256', 64)->comment('Хэш 256');
             $table->bigInteger('size')->comment('Размер');
             $table->text('mime_type')->comment('Тип mime');
-            $table->decimal('progress')->comment('Прогресс загрузки');
             $table->timestamps();
         });
+
+        DB::statement("COMMENT ON TABLE file IS 'Файл'");
     }
 
     /**

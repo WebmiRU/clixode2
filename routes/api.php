@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\BucketController;
 use App\Http\Controllers\API\BucketImageController;
+use App\Http\Controllers\API\DownloadTaskController;
 use App\Http\Controllers\API\FileController;
 use App\Http\Controllers\API\ImageController;
 use App\Http\Controllers\API\ImageProcessorController;
@@ -37,6 +38,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::group(['prefix' => 'file', 'as' => 'file.'], function () {
         Route::get('{uri}', [FileController::class, 'get'])->name('get');
         Route::post('/', [FileController::class, 'post'])->name('post');
+        Route::post('link', [FileController::class, 'link'])->name('link');
+//        Route::post('get-download-task-status', [FileController::class, 'getDownloadTaskStatus'])->name('get-download-task-status');
+    });
+
+    //DownloadTask
+    Route::group(['prefix' => 'download-task', 'as' => 'download-task.'], function () {
+        Route::post('check-status', [DownloadTaskController::class, 'checkStatus'])->name('check-status');
     });
 
     //Images

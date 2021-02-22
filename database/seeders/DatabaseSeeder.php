@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Bucket;
-use App\Models\User;
+use Database\Seeders\Public1\UserBucketSeeder;
+use Database\Seeders\Ref\DownloadTaskStatusSeeder;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,17 +15,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $user1 = User::create([
-             'name' => 'admin1@admin.admin',
-             'email' => 'admin1@admin.admin',
-             'password' => Hash::make('admin1@admin.admin'),
-        ]);
+        //ref
+        $this->call(DownloadTaskStatusSeeder::class);
 
-        $bucket1 = Bucket::create([
-            'title' => 'bucket',
-            'uri' => 'bucket',
-            'user_id' => $user1->id,
-            'type' => 'FILE'
-        ]);
+        //public1
+        $this->call(UserBucketSeeder::class);
     }
 }

@@ -4,14 +4,20 @@ namespace App\Http\Controllers\API;
 
 use App\Helpers\FileHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\BucketFile\TypeBucketFileResource;
+use App\Http\Resources\DownloadTask\TypeDownloadTaskResource;
 use App\Http\Resources\IndexResource;
+use App\Jobs\DownloadFileLink;
 use App\Models\BucketFile;
+use App\Models\DownloadTask;
 use App\Models\File;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Throwable;
 
 class FileController extends Controller
@@ -100,5 +106,57 @@ class FileController extends Controller
         }
 
         throw new Exception('Unique URI generation error');
+    }
+
+    /**
+     * Сохранение файла по урлу
+     *
+     * @param Request $request
+     * @return TypeDownloadTaskResource|JsonResponse|TypeBucketFileResource
+     * @throws Exception
+     */
+    public function link(Request $request): TypeDownloadTaskResource|JsonResponse|TypeBucketFileResource
+    {
+        $validator = Validator::make($request->all(), [
+            'url' => 'regex:/^https?:\/\//',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->messages(), 200);
+        }
+
+        //@todo убрать
+        $url = $request->get('url');
+        $bucketId = $request->get('bucket_id');
+//        $url = 'https://speedtest.selectel.ru/100MB';
+//        $bucketId = 1;
+
+        $file = File::where('sha256', hash("sha256", $url))->first();
+
+        if (!$file) {
+            $model = DownloadTask::create([
+                'url' => $url,
+                'progress' => 0,
+                'bucket_id' => $bucketId,
+                'ref_download_task_status_id' => 1,
+            ]);
+
+            DownloadFileLink::dispatch($url, $model, $bucketId);
+
+            return new TypeDownloadTaskResource($model);
+        }
+
+        $fileName = basename($url);
+
+        $model = BucketFile::create([
+            'bucket_id' => $bucketId,
+            'file_id' => $file->id,
+            'name' => $fileName,
+            'uri' => $this->generateBucketFileUri(),
+        ]);
+
+        $model->load('file', 'bucket');
+
+        return new TypeBucketFileResource($model);
     }
 }

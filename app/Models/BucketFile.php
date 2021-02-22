@@ -13,6 +13,11 @@ class BucketFile extends Model
     protected $table = 'bucket_file';
     protected $fillable = ['bucket_id', 'file_id', 'name', 'uri'];
 
+    public function bucket(): HasOne
+    {
+        return $this->hasOne(Bucket::class, 'id', 'bucket_id');
+    }
+
     public function file(): HasOne
     {
         return $this->hasOne(File::class, 'id', 'file_id');

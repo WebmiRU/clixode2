@@ -7,7 +7,10 @@
             <th class="narrow">#</th>
             <th>Title</th>
             <th>Type</th>
-            <th class="narrow">Edit</th>
+            <th>
+                <router-link :to="{ name: 'bucket-file.edit', params: {id: 'create'}}" class="nav-link">Add bucket file</router-link>
+                <router-link :to="{ name: 'bucket-image.edit', params: {id: 'create'}}" class="nav-link">Add bucket image</router-link>
+            </th>
         </tr>
         </thead>
         <tbody>

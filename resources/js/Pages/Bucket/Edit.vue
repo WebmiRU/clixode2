@@ -89,6 +89,8 @@
         </tbody>
     </table>
 
+    <button class="btn btn-info">Сохранить</button>
+
     <ul>
         <!--        @foreach($model->images as $v)-->
         <!--        <li>{{$v->id}} / {{$v->image->sha256}}</li>-->
